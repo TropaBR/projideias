@@ -1,0 +1,14 @@
+{
+  "name": "projideias",
+  "version": "1.0.0",
+  "description": "Sistema de Registro de Ideias e Sugestões",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Marcos Felipe & Yago Rezende",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
