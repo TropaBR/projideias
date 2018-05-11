@@ -5,9 +5,9 @@ app.get('/', function(req, res) {
 	res.send('home');
 });
 
-// Request routes
+// API routes
 var login = require('./routes/login');
-app.use('/login', login);
+app.use('/api/login', login);
 
 // Start the server
 const PORT = process.env.PORT || 8080;
