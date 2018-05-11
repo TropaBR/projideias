@@ -3,12 +3,33 @@
   "version": "1.0.0",
   "description": "Sistema de Registro de Ideias e Sugestões",
   "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "Marcos Felipe & Yago Rezende",
   "license": "MIT",
+  "engines": {
+    "node": ">=9.9.0"
+  },
+  "scripts": {
+    "deploy": "gcloud app deploy",
+    "start": "node app.js",
+    "lint": "repo-tools lint",
+    "pretest": "npm run lint",
+    "system-test": "repo-tools test app",
+    "test": "npm run system-test",
+    "e2e-test": "repo-tools test deploy"
+  },
   "dependencies": {
     "express": "^4.16.3"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "2.2.1"
+  },
+  "cloud-repo-tools": {
+    "test": {
+      "app": {
+        "msg": "Hello, world!"
+      }
+    },
+    "requiresKeyFile": true,
+    "requiresProjectId": true
   }
 }
