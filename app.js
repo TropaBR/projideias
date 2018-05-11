@@ -9,4 +9,10 @@ app.get('/', function(req, res) {
 var login = require('./routes/login')
 app.use('/login', login)
 
-app.listen(8080, () => console.log('Example app listening on port 80!'))
+// Start the server
+const PORT = process.env.PORT || 8080
+
+app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}`)
+  console.log('Press Ctrl+C to quit.')
+})
