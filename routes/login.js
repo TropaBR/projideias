@@ -1,10 +1,13 @@
 const express = require('express');
-const util = require('util');
 const db = require('./includes/mysqlConn');
 const router = express.Router();
 
 router.get('/', function (req, res) {
-  util.inspect(db);
+  resContent = {
+    login : req.query.login,
+    password : req.query.senha
+  };
+  res.send(resContent);
 });
 
 module.exports = router;

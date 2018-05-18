@@ -7,7 +7,13 @@ app.get('/', function(req, res) {
 
 // API routes
 var login = require('./routes/login');
-app.use('/api/login', login);
+app.use('/api/Login', login);
+
+var createUser = require('./routes/create_user');
+app.use('/api/createUser', createUser);
+
+var userExists = require('./routes/user_exists');
+app.use('/api/UserExists', userExists);
 
 // Start the server
 const PORT = process.env.PORT || 8080;
