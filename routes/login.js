@@ -1,5 +1,5 @@
 const express = require('express');
-const db = require('./includes/mysqlConn');
+const user = require('../classes/user');
 const router = express.Router();
 
 router.get('/', function (req, res) {

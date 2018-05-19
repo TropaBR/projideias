@@ -1,19 +1,10 @@
 const express = require('express');
-const db = require('./includes/mysqlConn');
+const user = require('../classes/user');
 const router = express.Router();
 
 router.get('/', function (req, res) {
-  // SQL
-  var sql = 'SELECT \'Found\' FROM Usuario WHERE email = ?';
-
-  // Inputs
-  var values = [
-    req.query.email
-  ];
-
-  // Logica
-  db.query(sql, values, function (err, result) {
-    if(err) {
+  user.userExists(req.query.email, function(err, result) {
+    if (err) {
       res.send('Erro');
       return;
     }

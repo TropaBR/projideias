@@ -1,25 +1,17 @@
 const express = require('express');
-const db = require('./includes/mysqlConn');
+const user = require('../classes/user');
 const router = express.Router();
+const bodyParser = require('body-parser');
 
-router.get('/', function (req, res) {
-    // SQL
-    var sql = 'INSERT INTO Usuario FROM  WHERE email = ?';
-  
-    // Inputs
-    var values = [
-      req.query.email
-    ];
-  
-    // Logica
-    db.query(sql, values, function (err, result) {
-      if(err) {
-        res.send('Erro');
-        return;
-      }
-      if(result.length > 0) res.sendStatus(200);
-      else res.sendStatus(404);
-    });
+router.post('/', bodyParser.urlencoded({extended: false}), function (req, res) {
+  user.createUser(req.body, function(err, result) {
+    if (err) {
+      res.send('Erro');
+      return;
+    }
+    if(result.affectedRows > 0) res.send(result);
+    else res.sendStatus(500);
   });
+});
 
 module.exports = router;

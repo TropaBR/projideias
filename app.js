@@ -1,3 +1,5 @@
+"use strict";
+
 const express = require('express');
 const app = express();
 
@@ -10,7 +12,7 @@ var login = require('./routes/login');
 app.use('/api/Login', login);
 
 var createUser = require('./routes/create_user');
-app.use('/api/createUser', createUser);
+app.use('/api/CreateUser', createUser);
 
 var userExists = require('./routes/user_exists');
 app.use('/api/UserExists', userExists);
