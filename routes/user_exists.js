@@ -5,7 +5,7 @@ const router = express.Router();
 router.get('/', function (req, res) {
   user.userExists(req.query.email, function(err, result) {
     if (err) {
-      res.send('Erro');
+      res.sendStatus(500);
       return;
     }
     if(result.length > 0) res.sendStatus(200);

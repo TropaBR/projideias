@@ -9,7 +9,7 @@ app.get('/', function(req, res) {
 
 // API routes
 var login = require('./routes/login');
-app.use('/api/Login', login);
+app.use('/api/Auth', login);
 
 var createUser = require('./routes/create_user');
 app.use('/api/CreateUser', createUser);
