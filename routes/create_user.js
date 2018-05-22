@@ -1,5 +1,5 @@
 const express = require('express');
-const user = require('../classes/user');
+const user = require('../models/user');
 const router = express.Router();
 const bodyParser = require('body-parser');
 var sessions = require("client-sessions");
@@ -10,8 +10,10 @@ router.post('/', bodyParser.urlencoded({extended: false}), function (req, res) {
       res.sendStatus(500);
       return;
     }
-    if(result.affectedRows > 0) res.send(result);
-    else res.sendStatus(500);
+    if(result.affectedRows > 0) {
+      console.log(result);
+      res.send(result[0]);
+    } else res.sendStatus(500);
   });
 });
 

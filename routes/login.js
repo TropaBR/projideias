@@ -1,5 +1,5 @@
 const express = require('express');
-const userClass = require('../classes/user');
+const userClass = require('../models/user');
 const router = express.Router();
 const bodyParser = require('body-parser');
 
@@ -30,45 +30,65 @@ router.post('/CheckEmail',
     });
 });
 
+
+
 // Segundo passo da autenticação em duas etapas - CHECANDO TOKEN E SENHA
 router.post('/Login',
   bodyParser.urlencoded({extended: false}),
+  emailTokenCheck,
+  passwordCheck,
   function (req, res) {
-    userClass.authEmailToken(req.body.emailToken, passwordCheck);
+    // Enviamos o token para o usuário utilizar
+    res.send( { token : res.locals.token });
 });
 
-function passwordCheck(err, result) {
-  if (err) {
-    console.log(err);
-    res.sendStatus(500);
-    return;
-  }
-  if(result.length > 0) {
-    userClass.authPassword(req.body.senha, result[0].senha, finishAuthentication);
-  } else res.sendStatus(401);
+// Middlewares //
+
+// Checagem do emailToken
+function emailTokenCheck(req, res, next) {
+  userClass.getEncryptedPassword(req.body.emailToken, function(err, result) {
+    if (err) {
+      console.log(err);
+      res.sendStatus(500);
+      return;
+    }
+    if(result.length === 0) res.sendStatus(401);
+    else {
+      // Caso tenhamos resultados, setamos a variavel para verificação da senha no prox middleware
+      res.locals.encryptedPw = result[0].senha;
+      next();
+    }
+  });
 }
 
-function finishAuthentication(err, result) {
-  if (err) {
-    console.log(err);
-    res.sendStatus(500);
-    return;
-  }
-  if(result) {
-    resContent = {
-      token : require('crypto').randomBytes(16).toString('hex')
-    };
-    userClass.storeToken(resContent.token, req.body.emailToken, function(err, result) {
-      if(err) {
-        console.log(err);
-        res.sendStatus(500);
-        return;
-      }
-      if(result.changedRows > 0) {
-        res.send(resContent);
-      } else res.sendStatus(500); 
-    });
-  } else res.sendStatus(401);
+// Chacagem da senha
+function passwordCheck(req, res, next) {
+  // Checamos a senha contra a senha utilizada pelo
+  userClass.authPassword(req.body.senha, res.locals.encryptedPw, function(err, bSame) {
+    if (err) {
+      console.log(err);
+      res.sendStatus(500);
+      return;
+    }
+    if (bSame) {
+
+      // Já que a senha está correta, podemos gerar o token e 
+      // armazenar tanto na resposta quanto no banco de dados
+      res.locals.token = require('crypto').randomBytes(16).toString('hex');
+      userClass.storeToken(res.locals.token, req.body.emailToken, function(err, result) {
+        if (err) {
+          console.log(err);
+          res.sendStatus(500);
+          return;
+        }
+        if (result.changedRows > 0) {
+          next();
+        } else res.sendStatus(500); 
+      });
+    } else {
+      res.sendStatus(401);
+    }
+  });
 }
 
 module.exports = router;

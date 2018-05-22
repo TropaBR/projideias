@@ -16,6 +16,7 @@ var mysqlConn  = mysql.createConnection({
 mysqlConn.connect(function(err) {
   if (err) {
     console.error('error connecting to database: ' + err.stack);
+    process.exit();
     return;
   }
 });
