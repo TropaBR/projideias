@@ -6,14 +6,6 @@ class User {
 
   }
 
-  set callback(callback) {
-    this._callback = callback;
-  }
-
-  get callback() {
-    return this._callback;
-  }
-
   static createUser(values, callback) {
     // Password encryption
     values.senha = auth.hashSync(values.senha, 11);
@@ -31,11 +23,15 @@ class User {
     db.query(sql, [email], callback);
   }
 
-  static authUser(emailToken, callback) {
+  static authEmailToken(emailToken, callback) {
     // SQL
     var sql = 'SELECT senha FROM Usuario WHERE emailToken = ?';
 
     db.query(sql, [emailToken], callback);
+  }
+
+  static authPassword(password, encryptedPassword, callback) {
+    auth.compare(password, encryptedPassword, callback);
   }
 
   static storeToken(token, emailToken, callback) {
@@ -62,13 +58,6 @@ class User {
     var sql = 'UPDATE Usuario SET token = NULL, emailToken = NULL WHERE ? = ?';
 
     db.query(sql, field, token);
-  }
-
-  _checkPassword(err, result) {
-    console.log(this.password);
-    console.log(result.senha);
-      this._callback(err, result,
-        auth.compareSync(this.password, result.senha));
   }
 }
 

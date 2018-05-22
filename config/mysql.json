@@ -1,5 +1,5 @@
 {
-  "host" : "35.199.99.123",
+  "host" : "localhost",
   "user" : "root",
   "password" : "maryago",
   "database" : "projideias"
