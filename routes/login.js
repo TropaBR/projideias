@@ -63,7 +63,7 @@ function emailTokenCheck(req, res, next) {
 
 // Chacagem da senha
 function passwordCheck(req, res, next) {
-  // Checamos a senha contra a senha utilizada pelo
+  // Checamos a senha fornecida contra a senha armazenada no banco de dados
   userClass.authPassword(req.body.senha, res.locals.encryptedPw, function(err, bSame) {
     if (err) {
       console.log(err);
@@ -71,7 +71,6 @@ function passwordCheck(req, res, next) {
       return;
     }
     if (bSame) {
-
       // Já que a senha está correta, podemos gerar o token e 
       // armazenar tanto na resposta quanto no banco de dados
       res.locals.token = require('crypto').randomBytes(16).toString('hex');
