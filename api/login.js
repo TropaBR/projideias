@@ -2,47 +2,9 @@ const express = require('express');
 const userClass = require('../models/user');
 const router = express.Router();
 const bodyParser = require('body-parser');
+const jwt = require('express-jwt');
 
-// Primeiro passo da autenticação em duas etapas - CHECANDO EMAIL
-router.post('/CheckEmail',
-  bodyParser.urlencoded({extended: false}),
-  function (req, res) {
-    userClass.userExists(req.body.email, function(err, result) {
-      if (err) {
-        res.sendStatus(500);
-        return;
-      }
-      if(result.length > 0) {
-        resContent = {
-          emailToken : require('crypto').randomBytes(8).toString('hex')
-        };
-        userClass.storeEmailToken(resContent.emailToken, req.body.email, function(err, result) {
-          if(err) {
-            console.log(err);
-            res.sendStatus(500);
-            return;
-          }
-          if(result.changedRows > 0) {
-            res.send(resContent);
-          }
-        });
-      } else res.sendStatus(404);
-    });
-});
-
-
-
-// Segundo passo da autenticação em duas etapas - CHECANDO TOKEN E SENHA
-router.post('/Login',
-  bodyParser.urlencoded({extended: false}),
-  emailTokenCheck,
-  passwordCheck,
-  function (req, res) {
-    // Enviamos o token para o usuário utilizar
-    res.send( { token : res.locals.token });
-});
-
-// Middlewares //
+//// Middlewares ////
 
 // Checagem do emailToken
 function emailTokenCheck(req, res, next) {
@@ -61,7 +23,7 @@ function emailTokenCheck(req, res, next) {
   });
 }
 
-// Chacagem da senha
+// Checagem da senha
 function passwordCheck(req, res, next) {
   // Checamos a senha fornecida contra a senha armazenada no banco de dados
   userClass.authPassword(req.body.senha, res.locals.encryptedPw, function(err, bSame) {
@@ -89,5 +51,42 @@ function passwordCheck(req, res, next) {
     }
   });
 }
+
+// Primeiro passo da autenticação em duas etapas - CHECANDO EMAIL
+router.post('/CheckEmail',
+  bodyParser.urlencoded({extended: false}),
+  function (req, res) {    
+    userClass.userExists(req.body.email, function(err, result) {
+      if (err) {
+        res.sendStatus(500);
+        return;
+      }
+      if(result.length > 0) {
+        resContent = {
+          emailToken : require('crypto').randomBytes(8).toString('hex')
+        };
+        userClass.storeEmailToken(resContent.emailToken, req.body.email, function(err, result) {
+          if(err) {
+            console.log(err);
+            res.sendStatus(500);
+            return;
+          }
+          if(result.changedRows > 0) {
+            res.send(resContent);
+          }
+        });
+      } else res.sendStatus(404);
+    });
+});
+
+// Segundo passo da autenticação em duas etapas - CHECANDO TOKEN E SENHA
+router.post('/Login',
+  bodyParser.urlencoded({extended: false}),
+  emailTokenCheck,
+  passwordCheck,
+  function (req, res) {
+    // Enviamos o token para o usuário utilizar
+    res.send( { token : res.locals.token });
+});
 
 module.exports = router;

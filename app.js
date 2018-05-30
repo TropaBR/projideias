@@ -3,22 +3,44 @@
 const express = require('express');
 const app = express();
 
-app.get('/', function(req, res) {
-	res.send('home');
+// Static files
+app.use(express.static('static_content'));
+
+// views settings
+app.set('views', './views');
+app.set('view engine', 'ejs');
+
+// View routes
+app.all('/:view?', function(req, res) {
+  var page = req.params.view || 'index';
+	res.render(page);
 });
 
 // API routes
-var login = require('./routes/login');
+var login = require('./api/login');
 app.use('/api/Auth', login);
 
-var createUser = require('./routes/create_user');
+var createUser = require('./api/create_user');
 app.use('/api/CreateUser', createUser);
 
-var userExists = require('./routes/user_exists');
+var userExists = require('./api/user_exists');
 app.use('/api/UserExists', userExists);
 
+// Error page
+app.use(function(req, res, next) {
+  res.status(404);  
+  res.render('error');
+});
+
+// Error page
+app.use(function(err, req, res, next) {
+  console.log(err);
+  res.status(500);  
+  res.render('error');
+});
+
 // Start the server
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 80;
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);

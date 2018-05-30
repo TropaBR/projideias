@@ -6,10 +6,10 @@ var parsed = JSON.parse(fs.readFileSync(configPath, 'UTF-8'));
 
 
 var mysqlConn  = mysql.createConnection({
-    host : parsed.host,
-    user : parsed.user,
-    password : parsed.password,
-    database : parsed.database
+  host : parsed.host,
+  user : parsed.user,
+  password : parsed.password,
+  database : parsed.database
 });
 
 
