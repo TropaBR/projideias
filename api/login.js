@@ -2,31 +2,40 @@ const express = require('express');
 const userClass = require('../models/user');
 const router = express.Router();
 const bodyParser = require('body-parser');
-const jwt = require('express-jwt');
+const jwt = require('jsonwebtoken');
 
 //// Middlewares ////
 
 // Checagem do emailToken
 function emailTokenCheck(req, res, next) {
-  userClass.getEncryptedPassword(req.body.emailToken, function(err, result) {
-    if (err) {
+  jwt.verify(req.body.emailToken, 'PRIVATE_KEY', function(err, decoded) {
+    if(err) {
       console.log(err);
       res.sendStatus(500);
       return;
-    }
-    if(result.length === 0) res.sendStatus(401);
-    else {
-      // Caso tenhamos resultados, setamos a variavel para verificação da senha no prox middleware
-      res.locals.encryptedPw = result[0].senha;
-      next();
+    } else {
+      userClass.getUser(decoded.id, function(err, result) {
+        if (err) {
+          console.log(err);
+          res.sendStatus(500);
+          return;
+        }
+        if(result.length === 0) res.sendStatus(401);
+        else {
+          // Caso tenhamos resultados, setamos a variavel para verificação da senha no prox middleware
+          res.locals.user = result[0];
+          next();
+        }
+      });
     }
   });
+  
 }
 
 // Checagem da senha
 function passwordCheck(req, res, next) {
   // Checamos a senha fornecida contra a senha armazenada no banco de dados
-  userClass.authPassword(req.body.senha, res.locals.encryptedPw, function(err, bSame) {
+  userClass.authPassword(req.body.password, res.locals.user.senha, function(err, bSame) {
     if (err) {
       console.log(err);
       res.sendStatus(500);
@@ -35,17 +44,14 @@ function passwordCheck(req, res, next) {
     if (bSame) {
       // Já que a senha está correta, podemos gerar o token e 
       // armazenar tanto na resposta quanto no banco de dados
-      res.locals.token = require('crypto').randomBytes(16).toString('hex');
-      userClass.storeToken(res.locals.token, req.body.emailToken, function(err, result) {
-        if (err) {
-          console.log(err);
-          res.sendStatus(500);
-          return;
-        }
-        if (result.changedRows > 0) {
-          next();
-        } else res.sendStatus(500); 
-      });
+      tokenData = {
+        id : res.locals.user.id,
+        email : res.locals.user.email,
+        nome : res.locals.user.nome,
+        sobrenome : res.locals.user.sobrenome
+      }
+      res.locals.token = jwt.sign(tokenData, 'PRIVATE_KEY');
+      next();  
     } else {
       res.sendStatus(401);
     }
@@ -56,25 +62,19 @@ function passwordCheck(req, res, next) {
 router.post('/CheckEmail',
   bodyParser.urlencoded({extended: false}),
   function (req, res) {    
-    userClass.userExists(req.body.email, function(err, result) {
+    userClass.getUserId(req.body.email, function(err, result) {
       if (err) {
         res.sendStatus(500);
         return;
       }
       if(result.length > 0) {
-        resContent = {
-          emailToken : require('crypto').randomBytes(8).toString('hex')
+        tokenData = {
+          id : result[0].id
         };
-        userClass.storeEmailToken(resContent.emailToken, req.body.email, function(err, result) {
-          if(err) {
-            console.log(err);
-            res.sendStatus(500);
-            return;
-          }
-          if(result.changedRows > 0) {
-            res.send(resContent);
-          }
-        });
+        resContent = {
+          emailToken : jwt.sign(tokenData, 'PRIVATE_KEY')
+        };
+        res.send(resContent);
       } else res.sendStatus(404);
     });
 });

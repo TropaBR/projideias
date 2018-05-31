@@ -13,16 +13,16 @@ exports.createUser = function(values, callback) {
   });
 }
 
-exports.userExists = function(email, callback) {
-  var sql = 'SELECT \'Found\' FROM Usuario WHERE email = ?';
+exports.getUserId = function(email, callback) {
+  var sql = 'SELECT id FROM Usuario WHERE email = ?';
 
   db.query(sql, [email], callback);
 }
 
-exports.getEncryptedPassword = function(emailToken, callback) {
-  var sql = 'SELECT senha FROM Usuario WHERE emailToken = ?';
+exports.getUser = function(id, callback) {
+  var sql = 'SELECT id, email, senha, nome, sobrenome FROM Usuario WHERE id = ?';
 
-  db.query(sql, [emailToken], callback);
+  db.query(sql, [id], callback);
 }
 
 exports.authPassword = function(password, encryptedPassword, callback) {

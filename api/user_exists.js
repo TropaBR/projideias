@@ -3,7 +3,7 @@ const user = require('../models/user');
 const router = express.Router();
 
 router.get('/', function (req, res) {
-  user.userExists(req.query.email, function(err, result) {
+  user.getUserId(req.query.email, function(err, result) {
     if (err) {
       res.sendStatus(500);
       return;
