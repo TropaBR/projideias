@@ -14,6 +14,8 @@ function emailTokenCheck(req, res, next) {
       res.sendStatus(500);
       return;
     } else {
+      // Pegamos o id que estava criptografado no emailToken e usamos para pegar as informações do usuário
+      // incluindo a senha para autenticação
       userClass.getUser(decoded.id, function(err, result) {
         if (err) {
           console.log(err);
@@ -28,8 +30,7 @@ function emailTokenCheck(req, res, next) {
         }
       });
     }
-  });
-  
+  });  
 }
 
 // Checagem da senha
