@@ -36,7 +36,7 @@ function emailTokenCheck(req, res, next) {
 // Checagem da senha
 function passwordCheck(req, res, next) {
   // Checamos a senha fornecida contra a senha armazenada no banco de dados
-  userClass.authPassword(req.body.password, res.locals.user.senha, function(err, bSame) {
+  userClass.authPassword(req.body.password, res.locals.user.password, function(err, bSame) {
     if (err) {
       console.log(err);
       res.sendStatus(500);
@@ -48,8 +48,8 @@ function passwordCheck(req, res, next) {
       tokenData = {
         id : res.locals.user.id,
         email : res.locals.user.email,
-        nome : res.locals.user.nome,
-        sobrenome : res.locals.user.sobrenome
+        nome : res.locals.user.name,
+        sobrenome : res.locals.user.lastname
       }
       res.locals.token = jwt.sign(tokenData, 'PRIVATE_KEY');
       next();  

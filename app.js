@@ -26,6 +26,9 @@ app.use('/api/CreateUser', createUser);
 var userExists = require('./api/user_exists');
 app.use('/api/UserExists', userExists);
 
+var login = require('./api/get_ideas');
+app.use('/api/GetIdeas', login);
+
 // Error page
 app.use(function(req, res, next) {
   res.status(404);  
