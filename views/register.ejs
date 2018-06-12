@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <% include ./components/head %>
+    <body>
+        <div class="container">
+            <h1>Registrar</h1>
+            <form id="registrationForm">
+                <div class="row">
+                    <div class="four columns">
+                        <label for="email">Email</label>
+                        <input class="u-full-width" type="email" id="email" name="email">
+                    </div>                    
+                </div>
+                <button id="btnNext">Avançar</button>
+            </form>
+        </div>
+        <script>
+            var fullForm = '<div class="row">\
+                    <div class="four columns">\
+                        <label for="name">Nome</label>\
+                        <input type="text" class="u-full-width" id="name" name="name">\
+                    </div>\
+                    <div class="eight columns">\
+                        <label for="lastname">Sobrenome</label>\
+                        <input type="text" class="u-full-width" id="lastname" name="lastname">\
+                    </div>\
+                <div class="row">\
+                    <div class="four columns">\
+                        <label for="phone">Telefone</label>\
+                        <input type="text" class="u-full-width" id="phone" name="phone">\
+                    </div>\
+                    <div class="four columns">\
+                        <label for="studentNumber">Matrícula</label>\
+                        <input type="text" class="u-full-width" id="number" name="number">\
+                    </div>\
+                </div>\
+                <div class="row">\
+                    <div class="two columns">\
+                        <label for="period">Período</label>\
+                        <select class="u-full-width" id="period" name="period">\
+                            <option value="1">1º</option>\
+                            <option value="2">2º</option>\
+                            <option value="3">3º</option>\
+                            <option value="4">4º</option>\
+                            <option value="5">5º</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <button>Registrar</button>';
+        </script>
+        <% include ./components/js_includes %>
+        <% include ./components/css_includes %>
+    </body>
+</html>

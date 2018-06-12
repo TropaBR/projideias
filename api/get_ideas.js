@@ -9,7 +9,6 @@ router.get('/', function (req, res) {
       return;
     }
     if(result.length > 0) {
-      console.log(JSON.stringify(result));
       res.send(JSON.stringify(result));
     } else res.sendStatus(404);
   });

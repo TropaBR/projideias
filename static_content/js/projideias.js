@@ -3,7 +3,7 @@ function getCookieValue(a) {
     return b ? b.pop() : '';
 }
 
-$("#btnRefresh").on("click", refreshProjideias);
+$("#btnFilter").on("click", filter);
 
 $("#btnSendEmail").on("click", function(e) {
     e.preventDefault();
@@ -12,7 +12,7 @@ $("#btnSendEmail").on("click", function(e) {
         console.log('Data: '+ data);
         console.log('Status: '+ status);
         var pwPanel = '<div id="passwordPanel">'+
-            '<label for="password">Senha: </label>'+
+            '<label for="password">Senha</label>'+
             '<input id="password" id="password" type="password">'+
             '<button id="btnLogin">Entrar</button>'+
             '</div>';

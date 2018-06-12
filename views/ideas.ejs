@@ -6,14 +6,14 @@
             <h1>Ideias</h1>
             <form id="filterForm">
                 <input name="filter" type="text">
-                <button id="btnRefresh">Filtrar</button>
+                <button id="btnFilter">Filtrar</button>
             </form>
             <table id="ideas" class="u-full-width">
                 <thead>
                     <tr>
                         <th>Ideia</th>
                         <th>Autor</th>
-                        <th>DescriÃ§Ã£o</th>
+                        <th>Descrição</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -21,16 +21,13 @@
             </table>
         </div>
         <script>
-            var refreshProjideias = function(e) {
+            var filter = function(e) {
                 if(e) e.preventDefault();
 
                 var data = $("#filterForm").serialize();
                             
                 $.get("api/GetIdeas", data, function(projects, status) {
                     projects = JSON.parse(projects);
-
-                    var tbody = $("#ideas").children("tbody");
-                        
                         tbody.children().remove();
 
                     for(i in projects) {
@@ -42,13 +39,17 @@
 
                         tbody.append(projectRow);
                     }
+                }).fail(function(status) {
+                    if(status.status == "404") tbody.children().remove();
                 });
             }
         </script>
         <% include ./components/js_includes %>
         <script>
+            var tbody = $("#ideas").children("tbody");
+
             $(function () {
-                refreshProjideias();
+                filter();
             });
         </script>
         <% include ./components/css_includes %>        

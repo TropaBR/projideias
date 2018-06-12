@@ -14,6 +14,5 @@ exports.getIdeas = function(filter, callback) {
         + " LEFT JOIN User ON ownerid = User.id";
     }
     
-    console.log(sql);
     db.query(sql, callback);
 }
