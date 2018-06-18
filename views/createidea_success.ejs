@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <div class="container">
+            <h1>Ideia Cadastrada com Sucesso!</h1>
+			<br />
+			<button id="btnReturn" onclick='window.location.href="ideas"'><< Voltar</button>
+        </div>
+        <% include ./components/css_includes %>      
+		<script>
+			window.onload = function() {
+				document.getElementById("btnReturn").focus();
+			};
+		</script>
+    </body>
+</html>

@@ -15,4 +15,13 @@ exports.getIdeas = function(filter, callback) {
     }
     
     db.query(sql, callback);
-}
+};
+
+exports.createIdea = function(values, callback) {
+	var title = values.title;
+	var ownerid = values.ownerid;
+	var description = values.description;
+    var sql = 'INSERT INTO Idea(title, ownerid, description) VALUES(?, ?, ?)';
+
+    db.query(sql, [title, ownerid, description], callback);
+};
