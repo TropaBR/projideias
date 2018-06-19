@@ -3,11 +3,13 @@ const auth = require('bcrypt');
 
 exports.createUser = function(values, callback) {
   // Criptografando a senha para gravação
-  auth.hash(values.senha, 11, function(err, encryptedPw){
+  auth.hash(values.password, 11, function(err, encryptedPw){
+    console.log(err);
+
     var sql = 'INSERT INTO User SET ?';
 
     // Setamos a senha para o valor da senha criptografada
-    values.senha = encryptedPw;
+    values.password = encryptedPw;
 
     db.query(sql, values, callback);
   });
