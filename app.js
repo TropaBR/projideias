@@ -29,6 +29,9 @@ app.use('/api/UserExists', userExists);
 var login = require('./api/get_ideas');
 app.use('/api/GetIdeas', login);
 
+var createIdea = require('./api/create_idea');
+app.use('/api/CreateIdea', createIdea);
+
 // Error page
 app.use(function(req, res, next) {
   res.status(404);

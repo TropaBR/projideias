@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <% include ./components/head %>
+    <body>
+        <div class="container">
+            <h1>Cadastrar Ideia</h1>
+            <form id="createIdea" action="JavaScript:createIdea()">
+				<input name="ownerid" type="hidden" value="1"> <!-- Campo que vai conter o ID do usuário da sessão // MUDAR AQUI!!! -->
+			
+				<label for="owner">Autor</label>
+                <input name="owner" type="text" size="48" value="--Nome do usuario aqui, somente leitura--" readonly>
+			
+				<label for="title">Título</label>
+                <input name="title" type="text" size="48" maxlength="100" required>
+				
+				<label for="description">Descrição</label>
+                <textarea name="description" rows="1" cols="50" maxlength="300" required></textarea>
+				
+				<br />
+				<input type="submit" value="Cadastrar">
+            </form>
+			<br /><br /><br />
+			<button id="btnReturn" onclick='window.location.href="ideas"'><< Voltar</button>
+        </div>
+		<script>
+			var filter = function(e) {;};
+            function createIdea(e) {
+                if(e) e.preventDefault();
+
+                var data = $("#createIdea").serialize();
+                $.get("api/CreateIdea", data, function(response, status) {
+                    window.location.href = "createidea_success";
+                }).fail(function(status) {
+                    alert(status.responseText);
+                });
+            }
+		</script>        
+        <% include ./components/js_includes %>
+        <% include ./components/css_includes %>        
+    </body>
+</html>
