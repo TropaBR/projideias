@@ -4,23 +4,50 @@
     <body>
         <div class="container">
             <h1>Cadastrar Ideia</h1>
-            <form id="createIdea" action="JavaScript:createIdea()">
-				<input name="ownerid" type="hidden" value="1"> <!-- Campo que vai conter o ID do usuário da sessão // MUDAR AQUI!!! -->
+			<!--
+			<form id="createIdea" action="JavaScript:createIdea()">
+				<input name="ownerid" type="hidden" value="1"> <!-- Campo que vai conter o ID do usuário da sessão // MUDAR AQUI!!! --> <!--
 			
 				<label for="owner">Autor</label>
                 <input name="owner" type="text" size="48" value="--Nome do usuario aqui, somente leitura--" readonly>
 			
 				<label for="title">Título</label>
-                <input name="title" type="text" size="48" maxlength="100" required>
+                <input name="title" type="text" size="48" maxlength="100" placeholder="Título da Ideia aqui..." required>
 				
 				<label for="description">Descrição</label>
-                <textarea name="description" rows="1" cols="50" maxlength="300" required></textarea>
+                <textarea name="description" rows="1" cols="50" maxlength="300" placeholder="Descrição da Ideia aqui..." required></textarea>
 				
 				<br />
-				<input type="submit" value="Cadastrar">
+				<input class="button-primary" type="submit" value="Cadastrar">
             </form>
+			-->
+			
+			<form id="createIdea" action="JavaScript:createIdea()">
+				<input name="ownerid" type="hidden" value="1"> <!-- Campo que vai conter o ID do usuário da sessão // MUDAR AQUI!!! -->
+				
+                <div class="row">
+                    <div class="four columns">
+                        <label for="owner">Autor</label>
+                        <input class="u-full-width" type="text" id="owner" name="owner" value="--Nome do usuario aqui, somente leitura--" readonly>
+                    </div>                    
+                </div>
+                <div class="row">
+                    <div class="six columns">
+                        <label for="title">Título</label>
+                        <input class="u-full-width" type="text" id="title" name="title" maxlength="100" placeholder="Título da Ideia aqui..." required>
+                    </div>                    
+                </div>
+                <div class="row">
+                    <div class="six columns">
+                        <label for="description">Descrição</label>
+                        <textarea class="u-full-width" id="description" name="description" maxlength="300" placeholder="Descrição da Ideia aqui..." required></textarea>
+                    </div>                    
+                </div>
+                <input class="button-primary" type="submit" value="Cadastrar">
+            </form>
+			
 			<br /><br /><br />
-			<button id="btnReturn" onclick='window.location.href="ideas"'><< Voltar</button>
+			<a class="u-pull-left button button-primary" href="ideas"><< Voltar</a>
         </div>
 		<script>
 			var filter = function(e) {;};
