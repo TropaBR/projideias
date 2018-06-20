@@ -4,13 +4,8 @@
         <div class="container">
             <h1>Ideia Cadastrada com Sucesso!</h1>
 			<br />
-			<button id="btnReturn" onclick='window.location.href="ideas"'><< Voltar</button>
+			<a class="u-pull-left button button-primary" href="ideas"><< Voltar</a>
         </div>
-        <% include ./components/css_includes %>      
-		<script>
-			window.onload = function() {
-				document.getElementById("btnReturn").focus();
-			};
-		</script>
+        <% include ./components/css_includes %>
     </body>
 </html>
