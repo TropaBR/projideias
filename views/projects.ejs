@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <% include ./components/head %>
+    <body>
+        <div class="container">
+            <h1>Projetos</h1>
+            <a class="u-pull-right button button-primary"href="createproject">Criar Projeto >></a>
+            <form id="projectFilterForm">
+                <input id="filter" name="filter" type="text">
+				<select id="selectStatus" name="selectStatus"></select> <!-- As opções serão definidas no script abaixo -->
+                <button>Filtrar</button>
+            </form>
+            <table id="projects" class="u-full-width">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+						<th>Categoria</th>
+						<th>Status</th>
+                        <th>Criador</th>
+                        <th>Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <script>
+            var filterProjects = function(e) {
+                if(e) e.preventDefault();
+
+                var data = $("#filterForm").serialize();
+                            
+                $.get("api/GetProjects", data, function(projects, status) {
+                    projects = JSON.parse(projects);
+                    tbody.children().remove();
+
+                    for(i in projects) {
+                        var projectRow = '<tr>'+
+                            '<td>'+ projects[i].name +'</td>'+
+							'<td>'+ projects[i].type +'</td>'+
+							'<td>'+ projects[i].status +'</td>'+
+							'<td>'+ projects[i].creator +'</td>'+
+                            '<td>'+ projects[i].description +'</td>'+
+                        '</tr>';
+
+                        tbody.append(projectRow);
+                    }
+                }).fail(function(status) {
+                    if(status.status == "404") tbody.children().remove();
+                });
+            }
+			
+			var getProjectStatus = function(e) {
+                if(e) e.preventDefault();
+				
+                $.get("api/GetProjectStatus", function(projectStatus, status) {
+                    projectStatus = JSON.parse(projectStatus);
+                    selectStatus.children().remove();
+					selectStatus.append('<option value="">Todos os Status</option>');
+                    for(i in projectStatus) {
+						var option = '<option value='+ projectStatus[i].id +'>'+ projectStatus[i].status +'</option>';
+                        selectStatus.append(option);
+                    }
+                }).fail(function(status) {
+                    if(status.status == "404") selectStatus.children().remove();
+                });
+            }
+        </script>
+        <% include ./components/js_includes %>
+        <script>
+            var tbody = $("#projects").children("tbody");
+			var selectStatus = $("#selectStatus");
+
+            $(function () {
+				getProjectStatus();
+                filterProjects();
+            });
+        </script>
+        <% include ./components/css_includes %>        
+    </body>
+</html>

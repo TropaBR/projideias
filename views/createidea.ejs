@@ -4,7 +4,7 @@
     <body>
         <div class="container">
             <h1>Cadastrar Ideia</h1>
-			<form id="createIdea" action="JavaScript:createIdea()">
+			<form id="createIdea">
 				<input name="ownerid" type="hidden" value="1"> <!-- Campo que vai conter o ID do usuário da sessão // MUDAR AQUI!!! -->
 				
                 <div class="row">
@@ -29,20 +29,7 @@
             </form>
 			<br /><br /><br />
 			<a class="u-pull-left button button-primary" href="ideas"><< Voltar</a>
-        </div>
-		<script>
-			var filter = function(e) {;};
-            function createIdea(e) {
-                if(e) e.preventDefault();
-
-                var data = $("#createIdea").serialize();
-                $.get("api/CreateIdea", data, function(response, status) {
-                    window.location.href = "createidea_success";
-                }).fail(function(status) {
-                    alert(status.responseText);
-                });
-            }
-		</script>        
+        </div>    
         <% include ./components/js_includes %>
         <% include ./components/css_includes %>        
     </body>

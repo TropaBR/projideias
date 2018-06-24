@@ -100,3 +100,40 @@ $("#loginForm").on("submit", function(e) {
         document.cookie = "emailToken="+ content.emailToken;
     });
 });
+
+$("#createIdea").on("submit", function (e) {
+	e.preventDefault();
+
+	var data = $("#createIdea").serialize();
+	$.get("api/CreateIdea", data, function(response) {
+		window.location.href = "createidea_success";
+	}).fail(function(status) {
+		alert(status.responseText);
+		$("#title").focus();
+	});
+});
+
+$("#projectFilterForm").on("submit", function(e) {
+	e.preventDefault();
+
+	var data = $("#projectFilterForm").serialize();
+				
+	$.get("api/GetProjects", data, function(projects) {
+		projects = JSON.parse(projects);
+		tbody.children().remove();
+
+		for(i in projects) {
+			var projectRow = '<tr>'+
+				'<td>'+ projects[i].name +'</td>'+
+				'<td>'+ projects[i].type +'</td>'+
+				'<td>'+ projects[i].status +'</td>'+
+				'<td>'+ projects[i].creator +'</td>'+
+				'<td>'+ projects[i].description +'</td>'+
+			'</tr>';
+
+			tbody.append(projectRow);
+		}
+	}).fail(function(status) {
+		if(status.status == "404") tbody.children().remove();
+	});
+});
