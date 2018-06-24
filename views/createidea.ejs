@@ -4,9 +4,7 @@
     <body>
         <div class="container">
             <h1>Cadastrar Ideia</h1>
-			<form id="createIdea" action="JavaScript:createIdea()">
-				<input name="ownerid" type="hidden" value="1"> <!-- Campo que vai conter o ID do usuário da sessão // MUDAR AQUI!!! -->
-				
+			<form id="createIdeaForm">			
                 <div class="row">
                     <div class="four columns">
                         <label for="owner">Autor</label>
@@ -15,33 +13,30 @@
                 </div>
                 <div class="row">
                     <div class="six columns">
-                        <label for="title">Título</label>
-                        <input class="u-full-width" type="text" id="title" name="title" maxlength="100" placeholder="Título da Ideia aqui..." required>
+                        <label for="title">TÃ­tulo</label>
+                        <input class="u-full-width" type="text" id="title" name="title" maxlength="100" placeholder="TÃ­tulo da Ideia aqui..." required>
                     </div>                    
                 </div>
                 <div class="row">
                     <div class="six columns">
-                        <label for="description">Descrição</label>
-                        <textarea class="u-full-width" id="description" name="description" maxlength="300" placeholder="Descrição da Ideia aqui..." required></textarea>
+                        <label for="description">DescriÃ§Ã£o</label>
+                        <textarea class="u-full-width" id="description" name="description" maxlength="300" placeholder="DescriÃ§Ã£o da Ideia aqui..." required></textarea>
                     </div>                    
                 </div>
                 <input class="button-primary" type="submit" value="Cadastrar">
             </form>
-			<br /><br /><br />
-			<a class="u-pull-left button button-primary" href="ideas"><< Voltar</a>
         </div>
 		<script>
-			var filter = function(e) {;};
-            function createIdea(e) {
-                if(e) e.preventDefault();
+            $("createIdeaForm").on("submit", function(e) {
+                e.preventDefault();
 
-                var data = $("#createIdea").serialize();
+                var data = $("#createIdeaForm").serialize();
                 $.get("api/CreateIdea", data, function(response, status) {
                     window.location.href = "createidea_success";
                 }).fail(function(status) {
                     alert(status.responseText);
                 });
-            }
+            });
 		</script>        
         <% include ./components/js_includes %>
         <% include ./components/css_includes %>        
