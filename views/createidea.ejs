@@ -4,13 +4,7 @@
     <body>
         <div class="container">
             <h1>Cadastrar Ideia</h1>
-			<form id="createIdeaForm">			
-                <div class="row">
-                    <div class="four columns">
-                        <label for="owner">Autor</label>
-                        <input class="u-full-width" type="text" id="owner" name="owner" value="--Nome do usuario aqui, somente leitura--" readonly>
-                    </div>                    
-                </div>
+			<form id="createIdeaForm">
                 <div class="row">
                     <div class="six columns">
                         <label for="title">Título</label>
@@ -25,19 +19,7 @@
                 </div>
                 <input class="button-primary" type="submit" value="Cadastrar">
             </form>
-        </div>
-		<script>
-            $("createIdeaForm").on("submit", function(e) {
-                e.preventDefault();
-
-                var data = $("#createIdeaForm").serialize();
-                $.get("api/CreateIdea", data, function(response, status) {
-                    window.location.href = "createidea_success";
-                }).fail(function(status) {
-                    alert(status.responseText);
-                });
-            });
-		</script>        
+        </div>    
         <% include ./components/js_includes %>
         <% include ./components/css_includes %>        
     </body>
