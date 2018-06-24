@@ -3,16 +3,18 @@
     <% include ./components/head %>
     <body>
         <div class="container">
-            <h1>Login</h1>
+            <h1>Entrar</h1>
             <form id="loginForm">
                 <div id="emailPanel">
                     <label for="email">Email</label>
                     <input id="email" name="email" type="email">
-                    <button id="btnSendEmail">Avançar</button>
-                </div>  
+                    <div>
+                        <button class="button-primary">Avançar</button>
+                    </div>
+                </div>
             </form>
-        </div>        
-        <% include ./components/js_includes %>        
+        </div>
+        <% include ./components/js_includes %>
         <% include ./components/css_includes %>
     </body>
 </html>

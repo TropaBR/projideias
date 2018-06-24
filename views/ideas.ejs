@@ -4,26 +4,22 @@
     <body>
         <div class="container">
             <h1>Ideias</h1>
-			<div style="float:left;">
-				<form id="filterForm">
-					<input name="filter" type="text">
-					<button id="btnFilter">Filtrar</button>
-				</form>
-			</div>
-			<div style="float:right;"><button id="btnCreateIdea" onclick='window.location.href="createidea"'>Cadastrar Ideia >></button></div>
+            <a class="u-pull-right button button-primary"href="createidea">Cadastrar Ideia >></a>
+            <form id="filterForm">
+                <input name="filter" type="text">
+                <button>Filtrar</button>
+            </form>            		
             <table id="ideas" class="u-full-width">
                 <thead>
                     <tr>
                         <th>Ideia</th>
                         <th>Autor</th>
-                        <th>Descrição</th>
+                        <th>DescriÃ§Ã£o</th>
                     </tr>
                 </thead>
                 <tbody>
                 </tbody>
             </table>
-			<br />
-			<button id="btnReturn" onclick='window.location.href="./"'><< Voltar</button>
         </div>
         <script>
             var filter = function(e) {

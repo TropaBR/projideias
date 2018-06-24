@@ -4,14 +4,26 @@
     <body>
         <div class="container">
             <h1>Registrar</h1>
-            <form id="registrationForm">
+            <form id="registerForm">
                 <div class="row">
                     <div class="four columns">
                         <label for="email">Email</label>
                         <input class="u-full-width" type="email" id="email" name="email">
                     </div>                    
                 </div>
-                <button id="btnNext">Avançar</button>
+                <div class="row">
+                    <div class="four columns">
+                        <label for="password">Senha</label>
+                        <input class="u-full-width" type="password" id="password" name="password">
+                    </div>                    
+                </div>
+                <div class="row">
+                    <div class="four columns">
+                        <label for="repeated-password">Repita a senha</label>
+                        <input class="u-full-width" type="password" id="repeated-password" name="repeated-password">
+                    </div>                    
+                </div>
+                <button class="button-primary">Avançar</button>
             </form>
         </div>
         <script>
@@ -24,6 +36,7 @@
                         <label for="lastname">Sobrenome</label>\
                         <input type="text" class="u-full-width" id="lastname" name="lastname">\
                     </div>\
+                </div>\
                 <div class="row">\
                     <div class="four columns">\
                         <label for="phone">Telefone</label>\
@@ -31,7 +44,7 @@
                     </div>\
                     <div class="four columns">\
                         <label for="studentNumber">Matrícula</label>\
-                        <input type="text" class="u-full-width" id="number" name="number">\
+                        <input type="text" class="u-full-width" id="studentNumber" name="studentNumber">\
                     </div>\
                 </div>\
                 <div class="row">\
@@ -46,9 +59,19 @@
                         </select>\
                     </div>\
                 </div>\
-                <button>Registrar</button>';
+                <button class="button-primary">Registrar</button>';
         </script>
         <% include ./components/js_includes %>
         <% include ./components/css_includes %>
+        <script>
+            var inputBorderColor = $("#password").css("border-color");
+            var passwordInputs = $(":password");
+
+            $("#repeated-password").on("blur", function(e) {
+                passwordInputs.css("border-color",
+                $(this).val() != $("#password").val() ? "red" : inputBorderColor
+                );
+            });
+        </script>
     </body>
 </html>
