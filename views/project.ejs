@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <% include ./components/head %>
+    <body>
+        <div class="container">
+            <h1 id="name"></h1>
+            <h3>Líder: <span id="leader"></span></h3>
+            <div id="description"></div>
+        </div>
+        <% include ./components/js_includes %>
+        <script>
+            function getParams(obj) {
+
+                for(var member in obj) {
+                    var re = new RegExp(member + '=(.*?)(?:(?:&)|$)');
+
+                    obj[member] = re.exec(window.location.href)[1];
+                }
+
+                return obj;
+            }
+
+            $(function() {
+                var params = {
+                    id:''
+                };
+
+                getParams(params);
+
+                console.log(params);
+
+                $.get("api/GetProject", params, function(project, status) {
+                    project = JSON.parse(project)[0];
+                    
+                    $("#name").text(project.name);
+                    $("#leader").text(project.leader);
+                    $("#description").text(project.description);
+
+                }).fail(function(status) {
+                    if(status.status == "404") ;
+                });
+            });
+        </script>
+        <% include ./components/css_includes %>        
+    </body>
+</html>

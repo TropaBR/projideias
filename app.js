@@ -32,6 +32,9 @@ app.use('/api/GetIdeas', login);
 var createIdea = require('./api/create_idea');
 app.use('/api/CreateIdea', createIdea);
 
+var getProject = require('./api/get_project');
+app.use('/api/GetProject', getProject);
+
 var getProjects = require('./api/get_projects');
 app.use('/api/GetProjects', getProjects);
 

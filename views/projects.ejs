@@ -4,7 +4,7 @@
     <body>
         <div class="container">
             <h1>Projetos</h1>
-            <a class="u-pull-right button button-primary"href="createproject">Criar Projeto >></a>
+            <a class="u-pull-right button button-primary" href="createproject">Criar Projeto</a>
             <form id="projectFilterForm">
                 <input id="filter" name="filter" type="text">
 				<select id="selectStatus" name="selectStatus"></select> <!-- As opções serão definidas no script abaixo -->
@@ -16,7 +16,7 @@
                         <th>Nome</th>
 						<th>Categoria</th>
 						<th>Status</th>
-                        <th>Criador</th>
+                        <th>Líder</th>
                         <th>Descrição</th>
                     </tr>
                 </thead>
@@ -39,7 +39,7 @@
                             '<td>'+ projects[i].name +'</td>'+
 							'<td>'+ projects[i].type +'</td>'+
 							'<td>'+ projects[i].status +'</td>'+
-							'<td>'+ projects[i].creator +'</td>'+
+							'<td>'+ projects[i].leader +'</td>'+
                             '<td>'+ projects[i].description +'</td>'+
                         '</tr>';
 

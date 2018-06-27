@@ -1,7 +1,7 @@
 const db = require('../includes/mysqlConn');
 
 exports.getProjects = function(filter, selectStatus, callback) {
-	var sql = "SELECT Project.name, ProjectType.type, ProjectStatus.status, User.name as creator, Project.description"
+	var sql = "SELECT Project.name, ProjectType.type, ProjectStatus.status, User.name as leader, Project.description"
 	+ " FROM Project"
 	+ " LEFT JOIN ProjectType ON Project.type = ProjectType.id"
 	+ " LEFT JOIN (" // Todo esse SQL abaixo é para consultar a tabela "ProjectStatusHistory" e retornar a linha com o último status de cada projeto
@@ -17,7 +17,7 @@ exports.getProjects = function(filter, selectStatus, callback) {
 	+ ") AS ProjectStatusHistory"
 	+ " ON Project.id = ProjectStatusHistory.idProject"
 	+ " LEFT JOIN ProjectStatus ON ProjectStatusHistory.idProjectStatus = ProjectStatus.id"
-	+ " LEFT JOIN User ON Project.creator = User.id"
+	+ " LEFT JOIN User ON Project.leader = User.id"
 	//+ " WHERE Project.private = 0"
 	+ " WHERE 1=1"; // APAGAR AQUI E DESCOMENTAR A LINHA ACIMA!!!
 	if(filter) {
@@ -42,4 +42,13 @@ exports.getProjectStatus = function(callback) {
 	+ " ORDER BY id";
 	
 	db.query(sql, callback);
+}
+
+exports.getProject = function(id, callback) {
+	var sql = "SELECT Project.*, User.name as leader"
+	+ " FROM Project"
+	+ " LEFT JOIN User ON Project.leader = User.id"
+	+ " WHERE Project.id = ?";
+	
+	db.query(sql, id, callback);
 }

@@ -101,12 +101,14 @@ $("#loginForm").on("submit", function(e) {
     });
 });
 
-$("#createIdea").on("submit", function (e) {
+$("#createIdeaForm").on("submit", function (e) {
 	e.preventDefault();
 
-	var data = $("#createIdea").serialize();
+    var container = $(".container");
+
+	var data = $("#createIdeaForm").serialize();
 	$.get("api/CreateIdea", data, function(response) {
-		window.location.href = "createidea_success";
+        // Aqui vamos redirecionar pra futura tela de visualização de projeto, com o id recebido
 	}).fail(function(status) {
 		alert(status.responseText);
 		$("#title").focus();
@@ -127,7 +129,7 @@ $("#projectFilterForm").on("submit", function(e) {
 				'<td>'+ projects[i].name +'</td>'+
 				'<td>'+ projects[i].type +'</td>'+
 				'<td>'+ projects[i].status +'</td>'+
-				'<td>'+ projects[i].creator +'</td>'+
+				'<td>'+ projects[i].leader +'</td>'+
 				'<td>'+ projects[i].description +'</td>'+
 			'</tr>';
 
