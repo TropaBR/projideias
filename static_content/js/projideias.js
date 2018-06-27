@@ -127,7 +127,7 @@ $("#projectFilterForm").on("submit", function(e) {
 				'<td>'+ projects[i].name +'</td>'+
 				'<td>'+ projects[i].type +'</td>'+
 				'<td>'+ projects[i].status +'</td>'+
-				'<td>'+ projects[i].creator +'</td>'+
+				'<td>'+ projects[i].leader +'</td>'+
 				'<td>'+ projects[i].description +'</td>'+
 			'</tr>';
 
