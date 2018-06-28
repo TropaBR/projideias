@@ -3,6 +3,17 @@ function getCookieValue(a) {
     return b ? b.pop() : '';
 }
 
+function getParams(obj) {
+
+    for(var member in obj) {
+        var re = new RegExp(member + '=(.*?)(?:(?:&)|$)');
+
+        obj[member] = re.exec(window.location.href)[1];
+    }
+
+    return obj;
+}
+
 $("#filterForm").on("submit", function(e) {
     e.preventDefault();
 

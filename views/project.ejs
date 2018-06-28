@@ -9,17 +9,6 @@
         </div>
         <% include ./components/js_includes %>
         <script>
-            function getParams(obj) {
-
-                for(var member in obj) {
-                    var re = new RegExp(member + '=(.*?)(?:(?:&)|$)');
-
-                    obj[member] = re.exec(window.location.href)[1];
-                }
-
-                return obj;
-            }
-
             $(function() {
                 var params = {
                     id:''
