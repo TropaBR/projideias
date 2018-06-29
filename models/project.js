@@ -17,7 +17,8 @@ exports.getProjects = function(filter, selectStatus, callback) {
 	+ ") AS ProjectStatusHistory"
 	+ " ON Project.id = ProjectStatusHistory.idProject"
 	+ " LEFT JOIN ProjectStatus ON ProjectStatusHistory.idProjectStatus = ProjectStatus.id"
-	+ " LEFT JOIN User ON Project.leader = User.id"
+	+ " LEFT JOIN ProjectParticipant ON ProjectParticipant.role LIKE '%Leader%' AND Project.id = ProjectParticipant.idProject"
+	+ " LEFT JOIN User ON ProjectParticipant.idUser = User.id"
 	//+ " WHERE Project.private = 0"
 	+ " WHERE 1=1"; // APAGAR AQUI E DESCOMENTAR A LINHA ACIMA!!!
 	if(filter) {
