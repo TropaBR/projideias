@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <% include ./components/head %>
+    <body>
+        <div class="container">
+            <h1>Ideia: <span id="title"></span></h1>
+            <h3>Autor: <span id="owner"></span></h3>
+            <div>Descrição: <span id="description"></span></div>
+			<br /><br /><br />
+			<h5>Projetos que usam essa ideia: <span id="totalProjects"></span></h5>
+			<table id="projectsUsingIdea" class="u-full-width">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+						<th>Categoria</th>
+						<th>Status</th>
+                        <th>Líder</th>
+                        <th>Descrição</th>
+						<th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <% include ./components/js_includes %>
+        <script>
+            $(function() {
+                var params = {
+                    id:''
+                };
+
+                getParams(params);
+
+                console.log(params);
+
+                $.get("api/GetIdea", params, function(idea, status) {
+                    idea = JSON.parse(idea)[0];
+                    
+                    $("#title").text(idea.title);
+                    $("#owner").text(idea.owner);
+                    $("#description").text(idea.description);
+
+                }).fail(function(status) {
+                    if(status.status == "404") ;
+                });
+				
+				var tbody = $("#projectsUsingIdea").children("tbody");
+				$.get("api/GetProjectsUsingIdea", params, function(projects, status) {
+					projects = JSON.parse(projects);
+					tbody.children().remove();
+					$("#totalProjects").text(projects.length);
+					if (projects.length == 0) {
+						tbody.parent().remove();
+					} else {
+						for(i in projects) {
+							var projectRow = '<tr>'+
+								'<td>'+ projects[i].name +'</td>'+
+								'<td>'+ projects[i].type +'</td>'+
+								'<td>'+ projects[i].status +'</td>'+
+								'<td>'+ projects[i].leader +'</td>'+
+								'<td>'+ projects[i].description +'</td>'+
+								'<td><a class="button" href="project?id='+ projects[i].id +'">Ver Projeto</a></td>'+
+							'</tr>';
+
+							tbody.append(projectRow);
+						}
+					}
+				}).fail(function(status) {
+					$("#totalProjects").text(0);
+					tbody.parent().remove();
+				});
+            });
+        </script>
+        <% include ./components/css_includes %>        
+    </body>
+</html>

@@ -19,15 +19,16 @@ $("#filterForm").on("submit", function(e) {
 
     var data = $("#filterForm").serialize();
                 
-    $.get("api/GetIdeas", data, function(projects) {
-        projects = JSON.parse(projects);
+    $.get("api/GetIdeas", data, function(ideas) {
+        ideas = JSON.parse(ideas);
             tbody.children().remove();
 
-        for(i in projects) {
+        for(i in ideas) {
             var projectRow = '<tr>'+
-                '<td>'+ projects[i].title +'</td>'+
-                '<td>'+ projects[i].name +'</td>'+
-                '<td>'+ projects[i].description +'</td>'+
+                '<td>'+ ideas[i].title +'</td>'+
+                '<td>'+ ideas[i].name +'</td>'+
+                '<td>'+ ideas[i].description +'</td>'+
+				'<td><a class="button" href="idea?id='+ ideas[i].id +'">Ver Ideia</a></td>'+
             '</tr>';
 
             tbody.append(projectRow);

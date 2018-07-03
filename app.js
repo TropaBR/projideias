@@ -41,6 +41,12 @@ app.use('/api/GetProjects', getProjects);
 var getProjectStatus = require('./api/get_projectstatus');
 app.use('/api/GetProjectStatus', getProjectStatus);
 
+var getIdea = require('./api/get_idea');
+app.use('/api/GetIdea', getIdea);
+
+var getProjectsUsingIdea = require('./api/get_projects_using_idea');
+app.use('/api/GetProjectsUsingIdea', getProjectsUsingIdea);
+
 // Error page
 app.use(function(req, res, next) {
   res.status(404);

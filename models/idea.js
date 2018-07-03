@@ -25,3 +25,12 @@ exports.createIdea = function(values, callback) {
 
     db.query(sql, [title, ownerid, description], callback);
 };
+
+exports.getIdea = function(id, callback) {
+	var sql = "SELECT Idea.*, User.name AS owner"
+	+ " FROM Idea"
+	+ " LEFT JOIN User ON ownerid = User.id"
+	+ " WHERE Idea.id = " + id;
+    
+    db.query(sql, callback);
+};
