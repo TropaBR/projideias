@@ -45,10 +45,18 @@ exports.getProjectStatus = function(callback) {
 }
 
 exports.getProject = function(id, callback) {
-	var sql = "SELECT Project.*, User.name as leader"
+	var sql = "SELECT Project.*"
 	+ " FROM Project"
-	+ " LEFT JOIN User ON Project.leader = User.id"
 	+ " WHERE Project.id = ?";
+	
+	db.query(sql, id, callback);
+}
+
+exports.getParticipants = function(id, callback) {
+	var sql = "SELECT User.*, ProjectParticipant.role, ProjectParticipant.dateTimeStart"
+	+ " FROM ProjectParticipant"
+	+ " LEFT JOIN User ON ProjectParticipant.idUser = User.id"
+	+ " WHERE ProjectParticipant.idProject = ?";
 	
 	db.query(sql, id, callback);
 }

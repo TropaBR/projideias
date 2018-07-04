@@ -6,6 +6,17 @@
             <h1 id="name"></h1>
             <h3>Líder: <span id="leader"></span></h3>
             <div id="description"></div>
+            <table id="participants">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Função</th>
+                        <th>Desde</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
         </div>
         <% include ./components/js_includes %>
         <script>
@@ -21,12 +32,39 @@
                 $.get("api/GetProject", params, function(project, status) {
                     project = JSON.parse(project)[0];
                     
-                    $("#name").text(project.name);
-                    $("#leader").text(project.leader);
+                    $("#name").text(project.name);                    
                     $("#description").text(project.description);
 
+                    $.get("api/GetProjectParticipants", params, function(participants, status) {
+                        participants = JSON.parse(participants);
+
+                        var participantsTable = $("#participants").children("tbody");
+
+                        for(i in participants) {
+                            if(participants[i].role == "Leader") {
+                                $("#leader").text(participants[i].name).attr("data-user", participants[i].id);
+                            }
+
+                            var row = '<tr class="tr-hover" data-user="'+ participants[i].id +'">' +
+                            '<td>'+ participants[i].name +'</td>' +
+                            '<td>'+ participants[i].role +'</td>' +
+                            '<td>'+ parseTimestamp(participants[i].dateTimeStart) +'</td>' +
+                            '</tr>';
+
+                            participantsTable.append(row);                            
+                        }
+
+                        participantsTable.children("tr").on("click", function () {
+                            alert($(this).attr("data-value"));
+                        });
+                    });
                 }).fail(function(status) {
-                    if(status.status == "404") ;
+                    if(status.status == "404") {
+                        var container = $(".container");
+                        container.children().remove();
+                        $("body, html, .container").css("height", "100%");
+                        container.append('<h1 class="screen-center">Tivemos um problema e não encontramos sua informação. :(</h1>');
+                    }
                 });
             });
         </script>
