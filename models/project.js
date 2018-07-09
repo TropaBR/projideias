@@ -1,7 +1,7 @@
 const db = require('../includes/mysqlConn');
 
 exports.getProjects = function(filter, selectStatus, callback) {
-	var sql = "SELECT Project.name, ProjectType.type, ProjectStatus.status, User.name as leader, Project.description"
+	var sql = "SELECT Project.id, Project.name, ProjectType.type, ProjectStatus.status, User.name as leader, Project.description"
 	+ " FROM Project"
 	+ " LEFT JOIN ProjectType ON Project.type = ProjectType.id"
 	+ " LEFT JOIN (" // Todo esse SQL abaixo é para consultar a tabela "ProjectStatusHistory" e retornar a linha com o último status de cada projeto
@@ -17,7 +17,7 @@ exports.getProjects = function(filter, selectStatus, callback) {
 	+ ") AS ProjectStatusHistory"
 	+ " ON Project.id = ProjectStatusHistory.idProject"
 	+ " LEFT JOIN ProjectStatus ON ProjectStatusHistory.idProjectStatus = ProjectStatus.id"
-	+ " LEFT JOIN ProjectParticipant ON ProjectParticipant.role LIKE '%Leader%' AND Project.id = ProjectParticipant.idProject"
+	+ " LEFT JOIN ProjectParticipant ON ProjectParticipant.role LIKE '%Líder%' AND Project.id = ProjectParticipant.idProject"
 	+ " LEFT JOIN User ON ProjectParticipant.idUser = User.id"
 	+ " WHERE Project.private = 0";
 	if(filter) {
@@ -86,4 +86,24 @@ exports.getProjectsUsingIdea = function(idIdea, callback) {
 	+ " ORDER BY ProjectStatusHistory.dateTimeStart DESC"; // Para ordenar os projetos pela última atualização de status
 	
     db.query(sql, idIdea, callback);
+};
+
+exports.getProjectLeader = function(id, callback) {
+	var sql = "SELECT idProject, idUser, name, lastname, email, dateTimeStart FROM ProjectParticipant"
+	+ " LEFT JOIN User ON User.id = idUser"
+	+ " WHERE Role = 'Líder' AND idProject = ?";
+
+    db.query(sql, [id], callback);
+};
+
+exports.getProjectWithUser = function(id, callback) {
+	var sql = "SELECT Project.*, ProjectStatus.status FROM ProjectParticipant"
+	+ " LEFT JOIN Project ON Project.id = idProject"
+	+ " LEFT JOIN ProjectStatusHistory ON ProjectStatusHistory.idProject = Project.id"
+	+ " LEFT JOIN ProjectStatus ON ProjectStatus.id = ProjectStatusHistory.idProjectStatus"
+	+ " WHERE idUser = ?"
+	+ " ORDER BY ProjectStatusHistory.timestamp DESC"
+	+ " LIMIT 1";
+
+    db.query(sql, [id], callback);
 };

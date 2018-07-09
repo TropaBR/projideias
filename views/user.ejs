@@ -3,38 +3,38 @@
     <% include ./components/head %>
     <body>
         <div class="container">
-            <h1 id="name"></h1>
-            <h3>Líder: <a id="leader"></a></h3>
-            <div id="description"></div>
+            <div class="hrz-center">
+                <h3 id="name"></h3>
+                <div>Está no <span class="info" id="period"></span></div>
+                <div>Email <a id="email"></a></div>
+                <div>Telefone <span class="info" id="phone"></span></div>                
+            </div>
             <div class="row">
                 <div class="six columns">
-                    <h3>Membros</h3>
-                    <table id="participants">
-                        <thead>
-                            <tr>
-                                <th>Membro</th>
-                                <th>Função</th>
-                                <th>Desde</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="six columns">
-                    <h3>Ideias</h3>
-                    <table id="ideas">
+                    <table id="ideas" class="u-full-width">
                         <thead>
                             <tr>
                                 <th>Ideia</th>
-                                <th>Autor</th>
+                                <th>Descrição</th>
                             </tr>
                         </thead>
                         <tbody>
                         </tbody>
                     </table>
                 </div>
-            </div>            
+                <div class="six columns">
+                    <table id="projects" class="u-full-width">
+                        <thead>
+                            <tr>
+                                <th>Projeto</th>
+                                <th>Fase</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
         <% include ./components/js_includes %>
         <script>
@@ -47,49 +47,45 @@
 
                 console.log(params);
 
-                $.get("api/GetProject", params, function(project, status) {
-                    project = JSON.parse(project)[0];
+                $.get("api/GetUser", params, function(user, status) {
+                    user = JSON.parse(user)[0];
                     
-                    $("#name").text(project.name);                    
-                    $("#description").text(project.description);
+                    $("#name").text(user.name + ' ' + user.lastname);
+                    $("#period").text(user.period + 'º período');
+                    $("#email").text(user.email).attr("href", "mailto:"+user.email);
+                    $("#phone").text(user.phone);
 
-                    $.get("api/GetProjectParticipants", params, function(participants, status) {
-                        participants = JSON.parse(participants);
+                    $.get("api/GetProjectWithUser", { id: user.id }, function(projects, status) {
+                        projects = JSON.parse(projects);
 
-                        var participantsTable = $("#participants").children("tbody");
+                        var projectsTable = $("#projects").children("tbody");
 
-                        for(i in participants) {
-                            if(participants[i].role == "Líder") {
-                                $("#leader").text(participants[i].name).attr("href", "user?id="+ participants[i].id);
-                            }
-
-                            var row = '<tr class="tr-hover" data-value="'+ participants[i].id +'">' +
-                            '<td>'+ participants[i].name +'</td>' +
-                            '<td>'+ participants[i].role +'</td>' +
-                            '<td>'+ parseTimestamp(participants[i].dateTimeStart) +'</td>' +
+                        for(i in projects) {
+                            var row = '<tr class="tr-hover" data-value="'+ projects[i].id +'">' +
+                            '<td>'+ projects[i].name +'</td>' +
+                            '<td>'+ projects[i].status +'</td>' +
                             '</tr>';
 
-                            participantsTable.append(row);                            
+                            projectsTable.append(row);                            
                         }
 
-                        participantsTable.children("tr").on("click", function () {
+                        projectsTable.children("tr").on("click", function () {
                             alert($(this).attr("data-value"));
                         });
                     });
 
-                    $.get("api/GetIdeasFromProject", params, function(ideas, status) {
+                    $.get("api/GetIdeasFromUser", { id: user.id }, function(ideas, status) {
                         ideas = JSON.parse(ideas);
 
                         var ideasTable = $("#ideas").children("tbody");
 
                         for(i in ideas) {
-
                             var row = '<tr class="tr-hover" data-value="'+ ideas[i].id +'">' +
                             '<td>'+ ideas[i].title +'</td>' +
-                            '<td>'+ ideas[i].owner +'</td>' +
+                            '<td>'+ ideas[i].description +'</td>' +
                             '</tr>';
 
-                            ideasTable.append(row);                   
+                            ideasTable.append(row);                            
                         }
 
                         ideasTable.children("tr").on("click", function () {

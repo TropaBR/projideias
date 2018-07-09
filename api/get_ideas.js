@@ -2,7 +2,7 @@ const express = require('express');
 const idea = require('../models/idea');
 const router = express.Router();
 
-router.get('/', function (req, res) {
+router.get('/GetIdeas', function (req, res) {
   idea.getIdeas(req.query.filter, function(err, result) {
     if (err) {
       res.sendStatus(500);

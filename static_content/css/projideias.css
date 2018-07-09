@@ -2,6 +2,16 @@ textarea {
     resize: vertical;
 }
 
+.group {
+    border: 1px solid #E1E1E1;
+    border-radius: 3px;
+}
+
+.hrz-center {
+    margin: auto;
+    text-align: center;
+}
+
 .screen-center {
     height: 100%; 
     width:100%;
@@ -13,4 +23,8 @@ textarea {
 
 .tr-hover:hover {
     background-color: #efefef;
+}
+
+.info {
+    color: #1EAEDB;
 }

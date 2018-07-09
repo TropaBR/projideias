@@ -20,12 +20,6 @@ app.all('/:view?', function(req, res) {
 var login = require('./api/login');
 app.use('/api/Auth', login);
 
-var createUser = require('./api/create_user');
-app.use('/api/CreateUser', createUser);
-
-var userExists = require('./api/user_exists');
-app.use('/api/UserExists', userExists);
-
 var login = require('./api/get_ideas');
 app.use('/api/GetIdeas', login);
 
@@ -35,11 +29,14 @@ app.use('/api/CreateIdea', createIdea);
 var project = require('./api/project');
 app.use('/api/', project);
 
-var getIdea = require('./api/get_idea');
-app.use('/api/GetIdea', getIdea);
+var idea = require('./api/idea');
+app.use('/api/', idea);
 
-var getProjectsUsingIdea = require('./api/get_projects_using_idea');
-app.use('/api/GetProjectsUsingIdea', getProjectsUsingIdea);
+var user = require('./api/user');
+app.use('/api/', user);
+
+//var getProjectsUsingIdea = require('./api/get_projects_using_idea');
+//app.use('/api/GetProjectsUsingIdea', getProjectsUsingIdea);
 
 // Error page
 app.use(function(req, res, next) {

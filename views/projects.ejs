@@ -34,17 +34,22 @@
                     projects = JSON.parse(projects);
                     tbody.children().remove();
 
-                    for(i in projects) {
-                        var projectRow = '<tr>'+
-                            '<td>'+ projects[i].name +'</td>'+
-							'<td>'+ projects[i].type +'</td>'+
-							'<td>'+ projects[i].status +'</td>'+
-							'<td>'+ projects[i].leader +'</td>'+
-                            '<td>'+ projects[i].description +'</td>'+
-                        '</tr>';
+                    projects.forEach(function (project) {
+                        $.get("api/GetProjectLeader", { id: project.id }, function(response, status) {
 
-                        tbody.append(projectRow);
-                    }
+                            var leader = JSON.parse(response)[0].name;
+                            
+                            var projectRow = '<tr>'+
+                                '<td>'+ project.name +'</td>'+
+                                '<td>'+ project.type +'</td>'+
+                                '<td>'+ project.status +'</td>'+
+                                '<td>'+ leader +'</td>'+
+                                '<td>'+ project.description +'</td>'+
+                            '</tr>';
+
+                            tbody.append(projectRow);
+                        });
+                    });
                 }).fail(function(status) {
                     if(status.status == "404") tbody.children().remove();
                 });

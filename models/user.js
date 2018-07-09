@@ -22,7 +22,7 @@ exports.getUserId = function(email, callback) {
 }
 
 exports.getUser = function(id, callback) {
-  var sql = 'SELECT id, email, password, name, lastname FROM User WHERE id = ?';
+  var sql = 'SELECT id, email, name, lastname, period, phone FROM User WHERE id = ?';
 
   db.query(sql, [id], callback);
 }
@@ -53,4 +53,10 @@ exports.cleanTokens = function(token, field) {
   var sql = 'UPDATE User SET token = NULL, emailToken = NULL WHERE ? = ?';
 
   db.query(sql, field, token);
+}
+
+exports.getUserPassword = function(id, callback) {
+  var sql = 'SELECT password FROM User WHERE id = ?';
+
+  db.query(sql, [id], callback);
 }
