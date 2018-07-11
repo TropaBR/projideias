@@ -3,7 +3,8 @@
     <% include ./components/head %>
     <body>
         <div class="container">
-            <h1>Ideias</h1>
+            <% include ./components/header %>
+            <h3>Ideias</h3>
             <a class="u-pull-right button button-primary" href="createidea">Cadastrar Ideia</a>
             <form id="filterForm">
                 <input name="filter" type="text">
@@ -28,7 +29,7 @@
 
                 var data = $("#filterForm").serialize();
                             
-                $.get("api/GetIdeas", data, function(ideas, status) {
+                $.get("api/GetFilteredIdeas", data, function(ideas, status) {
                     ideas = JSON.parse(ideas);
                         tbody.children().remove();
 

@@ -3,8 +3,9 @@
     <% include ./components/head %>
     <body>
         <div class="container">
-            <h1 id="name"></h1>
-            <h3>Líder: <a id="leader"></a></h3>
+            <% include ./components/header %>
+            <h3 id="name"></h1>
+            <h4>Líder: <a id="leader"></a></h4>
             <div id="description"></div>
             <div class="row">
                 <div class="six columns">
@@ -73,7 +74,7 @@
                         }
 
                         participantsTable.children("tr").on("click", function () {
-                            alert($(this).attr("data-value"));
+                            window.location.href = "user?id=" + $(this).attr("data-value");
                         });
                     });
 
@@ -93,7 +94,7 @@
                         }
 
                         ideasTable.children("tr").on("click", function () {
-                            alert($(this).attr("data-value"));
+                            window.location.href = "idea?id=" + $(this).attr("data-value");
                         });
                     });
                 }).fail(function(status) {

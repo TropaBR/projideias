@@ -2,8 +2,11 @@
 <html>
     <body>
 		<div class="container">
-			<a class="button button-primary" href="ideas">Tela de Ideias</a>
-			<a class="button button-primary" href="projects">Tela de Projetos</a>
+			<% include ./components/header %>
+			<div class="row">
+				<a class="button button-primary six columns" href="ideas">Tela de Ideias</a>
+				<a class="button button-primary six columns" href="projects">Tela de Projetos</a>
+			</div>
 		</div>
         <% include ./components/css_includes %>
     </body>

@@ -3,6 +3,7 @@
     <% include ./components/head %>
     <body>
         <div class="container">
+            <% include ./components/header %>
             <div class="hrz-center">
                 <h3 id="name"></h3>
                 <div>Está no <span class="info" id="period"></span></div>
@@ -70,7 +71,7 @@
                         }
 
                         projectsTable.children("tr").on("click", function () {
-                            alert($(this).attr("data-value"));
+                            window.location.href = "project?id=" + $(this).attr("data-value");
                         });
                     });
 
@@ -89,7 +90,7 @@
                         }
 
                         ideasTable.children("tr").on("click", function () {
-                            alert($(this).attr("data-value"));
+                            window.location.href = "idea?id=" + $(this).attr("data-value");
                         });
                     });
                 }).fail(function(status) {
