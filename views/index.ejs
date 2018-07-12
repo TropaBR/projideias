@@ -4,10 +4,71 @@
     <body>
 		<div class="container">
 			<% include ./components/header %>
-			<div class="row">
-				<a class="button button-primary six columns" href="ideas">Tela de Ideias</a>
-				<a class="button button-primary six columns" href="projects">Tela de Projetos</a>
-			</div>
+			<h5>Busca rápida de ideia, projeto ou usuário</h5>
+			<form id="searchFilterForm">
+                <input name="filter" type="text">
+                <button>Buscar</button>
+            </form>
+			<table id="resultSearchTable" class="u-full-width">
+                <tbody>
+                </tbody>
+            </table>
+			
+			<br />
+			<h5>Projetos Recentes - Que tal participar de um?</h5>
+			<table id="recentProjects" class="u-full-width">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+						<th>Categoria</th>
+                        <th>Líder</th>
+                        <th>Descrição</th>
+						<th>Criação</th>
+						<th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
 		</div>
+        <% include ./components/css_includes %>
+		<% include ./components/js_includes %>
+		<script>
+            var tbodyRecentProjects = $("#recentProjects").children("tbody");
+			
+			var getRecentProjects = function(e) {
+                if(e) e.preventDefault();
+                var nProjects = 1; // Número máximo de projetos recentes a serem exibidos            
+							
+                $.get("api/GetRecentProjects", { "nProjects": nProjects }, function(projects, status) {
+                    projects = JSON.parse(projects);
+                    tbodyRecentProjects.children().remove();
+
+                    projects.forEach(function (project) {
+                        $.get("api/GetProjectLeader", { id: project.id }, function(response, status) {
+
+                            var leader = JSON.parse(response)[0].name;
+                            
+                            var projectRow = '<tr>'+
+                                '<td>'+ project.name +'</td>'+
+                                '<td>'+ project.type +'</td>'+
+                                '<td>'+ leader +'</td>'+
+                                '<td>'+ project.description +'</td>'+
+								'<td>'+ project.creationDate +'</td>'+
+								'<td><a class="button" href="project?id='+ project.id +'">Ver Projeto</a></td>'+
+                            '</tr>';
+
+                            tbodyRecentProjects.append(projectRow);
+                        });
+                    });
+                }).fail(function(status) {
+                    if(status.status == "404") tbodyRecentProjects.children().remove();
+                });
+            }
+
+            $(function () {
+                getRecentProjects();
+            });
+        </script>
     </body>
 </html>

@@ -19,6 +19,7 @@
 						<th>Status</th>
                         <th>Líder</th>
                         <th>Descrição</th>
+						<th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,6 +47,7 @@
                                 '<td>'+ project.status +'</td>'+
                                 '<td>'+ leader +'</td>'+
                                 '<td>'+ project.description +'</td>'+
+								'<td><a class="button" href="project?id='+ project.id +'">Ver Projeto</a></td>'+
                             '</tr>';
 
                             tbody.append(projectRow);
@@ -82,5 +84,6 @@
                 filterProjects();
             });
         </script>
+        <% include ./components/css_includes %>        
     </body>
 </html>

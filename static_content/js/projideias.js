@@ -35,7 +35,7 @@ $("#filterForm").on("submit", function(e) {
 
     var data = $("#filterForm").serialize();
                 
-    $.get("api/GetIdeas", data, function(ideas) {
+    $.get("api/GetFilteredIdeas", data, function(ideas) {
         ideas = JSON.parse(ideas);
             tbody.children().remove();
 
@@ -155,6 +155,7 @@ $("#projectFilterForm").on("submit", function(e) {
 				'<td>'+ projects[i].status +'</td>'+
 				'<td>'+ projects[i].leader +'</td>'+
 				'<td>'+ projects[i].description +'</td>'+
+				'<td><a class="button" href="project?id='+ projects[i].id +'">Ver Projeto</a></td>'+
 			'</tr>';
 
 			tbody.append(projectRow);
@@ -162,4 +163,63 @@ $("#projectFilterForm").on("submit", function(e) {
 	}).fail(function(status) {
 		if(status.status == "404") tbody.children().remove();
 	});
+});
+
+$("#searchFilterForm").on("submit", function(e) {
+	e.preventDefault();
+
+	var tbody = $("#resultSearchTable").children("tbody");
+	tbody.children().remove();
+	var data = $("#searchFilterForm").serialize();
+	if ( data.replace("filter=",'') ) {
+		$.get("api/GetProjects", data, function(projects) {
+			projects = JSON.parse(projects);
+			for(i in projects) {
+				var projectRow = '<tr>'+
+					'<td><b>PROJETO</b></td>'+
+					'<td><b>Nome: </b>'+ projects[i].name +'</td>'+
+					'<td><b>Líder: </b>'+ projects[i].leader +'</td>'+
+					'<td>'+ projects[i].description +'</td>'+
+					'<td><a class="button" href="project?id='+ projects[i].id +'">Ver Projeto</a></td>'+
+				'</tr>';
+
+				tbody.append(projectRow);
+			}
+		}).fail(function(status) {
+			;
+		});
+		
+		$.get("api/GetFilteredIdeas", data, function(ideas) {
+			ideas = JSON.parse(ideas);
+			for(i in ideas) {
+				var ideaRow = '<tr>'+
+					'<td><b>IDEIA</b></td>'+
+					'<td><b>Nome: </b>'+ ideas[i].title +'</td>'+
+					'<td><b>Autor: </b>'+ ideas[i].name +'</td>'+
+					'<td>'+ ideas[i].description +'</td>'+
+					'<td style="text-align: right;"><a class="button" href="idea?id='+ ideas[i].id +'">Ver Ideia</a></td>'+
+				'</tr>';
+
+				tbody.append(ideaRow);
+			}
+		}).fail(function(status) {
+			;
+		});
+		
+		$.get("api/GetUsersByName", data, function(users) {
+			users = JSON.parse(users);
+			for(i in users) {
+				var userRow = '<tr>'+
+					'<td><b>USUÁRIO</b></td>'+
+					'<td><b>Nome: </b>'+ users[i].name +'</td>'+
+					'<td><b>Sobrenome: </b>'+ users[i].lastname +'</td>'+
+					'<td><b>Período: </b>'+ users[i].period +'</td>'+
+				'</tr>';
+
+				tbody.append(userRow);
+			}
+		}).fail(function(status) {
+			;
+		});
+	}
 });

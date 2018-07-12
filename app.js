@@ -68,6 +68,12 @@ app.use('/api/', project);
 var idea = require('./api/idea');
 app.use('/api/', idea);
 
+var getUsers = require('./api/get_users');
+app.use('/api/GetUsersByName', getUsers);
+
+var getRecentProjects = require('./api/get_recent_projects');
+app.use('/api/GetRecentProjects', getRecentProjects);
+
 // Error page
 app.use(function(req, res, next) {
   res.status(404);

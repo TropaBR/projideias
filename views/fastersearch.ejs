@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<% include ./components/head %>
+<html>
+    <body>
+		<div class="container">
+			<% include ./components/header %>
+			<h5>Busca rápida de ideia, projeto ou usuário</h5>
+			<form id="searchFilterForm">
+                <input name="filter" type="text">
+                <button>Buscar</button>
+            </form>
+			<table id="resultSearchTable" class="u-full-width">
+                <tbody>
+                </tbody>
+            </table>
+		</div>
+        <% include ./components/css_includes %>
+		<% include ./components/js_includes %>
+    </body>
+</html>

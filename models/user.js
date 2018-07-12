@@ -60,3 +60,13 @@ exports.getUserPassword = function(id, callback) {
 
   db.query(sql, [id], callback);
 }
+
+exports.getUsersByName = function(name, callback) {
+	if(name) {
+		var sql = "SELECT id, name, lastname, period FROM User"
+			+" WHERE name like '%"+name+"%'"
+			+" OR lastname like '%"+name+"%'";
+
+		db.query(sql, callback);
+	}
+}

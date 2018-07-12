@@ -107,3 +107,45 @@ exports.getProjectWithUser = function(id, callback) {
 
     db.query(sql, [id], callback);
 };
+
+exports.getRecentProjects = function(nProjects, callback) {
+	if ( isNaN(nProjects) ) {
+		nProjects = 5;
+	}
+	var sql = "SELECT Project.id, Project.name, ProjectType.type, ProjectStatus.status, User.name as leader, Project.description, DATE_FORMAT(ProjectHistoryCreation.timestamp, \"%d/%m/%y\") as creationDate"
+	+ " FROM Project"
+	+ " LEFT JOIN ProjectType ON Project.type = ProjectType.id"
+	+ " LEFT JOIN (" // Todo esse SQL abaixo é para consultar a tabela "ProjectStatusHistory" e retornar a linha com o último status de cada projeto
+		+ " SELECT ProjectStatusHistory.*"
+		+ " FROM ProjectStatusHistory"
+		+ " INNER JOIN ("
+			+ "SELECT idProject, MAX(timestamp) AS dateTimeStart"
+			+ " FROM ProjectStatusHistory"
+			+ " GROUP BY idProject"
+		+ ") p"
+		+ " ON ProjectStatusHistory.idProject = p.idProject"
+		+ " AND ProjectStatusHistory.timestamp = p.dateTimeStart"
+	+ ") AS ProjectStatusHistory"
+	+ " ON Project.id = ProjectStatusHistory.idProject"
+	+ " LEFT JOIN ProjectStatus ON ProjectStatusHistory.idProjectStatus = ProjectStatus.id"
+	+ " LEFT JOIN ProjectParticipant ON ProjectParticipant.role LIKE '%Líder%' AND Project.id = ProjectParticipant.idProject"
+	+ " LEFT JOIN User ON ProjectParticipant.idUser = User.id"
+	+ " LEFT JOIN (" // Todo esse SQL abaixo é para consultar a tabela "ProjectStatusHistory" e retornar a linha com o primeiro status de cada projeto (status de projeto criado)
+		+ " SELECT ProjectStatusHistory.*"
+		+ " FROM ProjectStatusHistory"
+		+ " INNER JOIN ("
+			+ "SELECT idProject, MIN(timestamp) AS dateTimeStart"
+			+ " FROM ProjectStatusHistory"
+			+ " GROUP BY idProject"
+		+ ") p"
+		+ " ON ProjectStatusHistory.idProject = p.idProject"
+		+ " AND ProjectStatusHistory.timestamp = p.dateTimeStart"
+	+ ") AS ProjectHistoryCreation"
+	+ " ON Project.id = ProjectHistoryCreation.idProject"
+	+ " WHERE Project.private = 0"
+	+ " ORDER BY ProjectHistoryCreation.timestamp DESC" // Para ordenar os projetos pela data de criação
+	+ " LIMIT ?";
+	
+    //db.query(sql, [nProjects], callback);
+	db.query(sql, [5], callback); // APAGAR AQUI E USAR A LINHA DE CIMA!!!
+};
