@@ -2,6 +2,8 @@
 
 const express = require('express');
 const app = express();
+const jwt = require('jsonwebtoken');
+const ckParser = require('cookie-parser');
 
 // Static files
 app.use(express.static('static_content'));
@@ -10,18 +12,52 @@ app.use(express.static('static_content'));
 app.set('views', './views');
 app.set('view engine', 'ejs');
 
-// View routes
+app.use(ckParser());
+
+function TokenCheck(req, res, next) {
+  jwt.verify(req.cookies.token, 'PRIVATE_KEY', function(err, decoded) {
+    if(err) {
+      console.log(err);
+      res.render('unlogged_index');
+      return;
+    } else {
+      res.locals.user = decoded;
+      next();
+    }
+  });
+}
+
+// Public API routes
+var login = require('./api/login');
+app.use('/api/Auth', login);
+
+var user = require('./api/user');
+app.use('/api/', user);
+
+var UserExists = require('./api/user_exists');
+app.use('/api/UserExists', UserExists);
+
+// Public view routes
+app.all('/login', function(req, res) {
+	res.render('login');
+});
+
+app.all('/register', function(req, res) {
+	res.render('register');
+});
+
+// Logged-in content past this line
+app.use(TokenCheck);
+
+// Logged-in view routes
 app.all('/:view?', function(req, res) {
   var page = req.params.view || 'index';
 	res.render(page);
 });
 
-// API routes
-var login = require('./api/login');
-app.use('/api/Auth', login);
-
-var login = require('./api/get_ideas');
-app.use('/api/GetIdeas', login);
+// Logged-in API routes
+var getIdeas = require('./api/get_ideas');
+app.use('/api/GetIdeas', getIdeas);
 
 var createIdea = require('./api/create_idea');
 app.use('/api/CreateIdea', createIdea);
@@ -31,12 +67,6 @@ app.use('/api/', project);
 
 var idea = require('./api/idea');
 app.use('/api/', idea);
-
-var user = require('./api/user');
-app.use('/api/', user);
-
-//var getProjectsUsingIdea = require('./api/get_projects_using_idea');
-//app.use('/api/GetProjectsUsingIdea', getProjectsUsingIdea);
 
 // Error page
 app.use(function(req, res, next) {

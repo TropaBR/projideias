@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 
 // Checagem do emailToken
 function emailTokenCheck(req, res, next) {
-  jwt.verify(req.body.emailToken, 'PRIVATE_KEY', function(err, decoded) {
+  jwt.verify(req.cookies.emailToken, 'PRIVATE_KEY', function(err, decoded) {
     if(err) {
       console.log(err);
       res.sendStatus(500);
@@ -86,14 +86,16 @@ router.post('/CheckEmail',
         res.sendStatus(500);
         return;
       }
+
       if(result.length > 0) {
         tokenData = {
           id : result[0].id
         };
-        resContent = {
-          emailToken : jwt.sign(tokenData, 'PRIVATE_KEY')
-        };
-        res.send(resContent);
+
+        var emailToken = jwt.sign(tokenData, 'PRIVATE_KEY');
+
+        res.cookie('emailToken', emailToken, { sameSite: true, httpOnly: false });
+        res.send();
       } else res.sendStatus(404);
     });
 });
@@ -105,7 +107,9 @@ router.post('/Login',
   passwordCheck,
   function (req, res) {
     // Enviamos o token para o usuário utilizar
-    res.send( { token : res.locals.token });
+    res.cookie('token', res.locals.token, { sameSite: true, httpOnly: false } );
+    res.clearCookie('emailToken');
+    res.send();
 });
 
 module.exports = router;

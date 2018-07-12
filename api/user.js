@@ -1,6 +1,7 @@
 const express = require('express');
 const user = require('../models/user');
 const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
 const router = express.Router();
 
 router.get('/UserExists', function (req, res) {

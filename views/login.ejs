@@ -1,9 +1,10 @@
 <!DOCTYPE html>
+<% include ./components/head %>
 <html>
-    <% include ./components/head %>
     <body>
         <div class="container">
-            <h1>Entrar</h1>
+            <% include ./components/header %>
+            <h3>Entrar</h3>
             <form id="loginForm">
                 <div id="emailPanel">
                     <label for="email">Email</label>
@@ -15,6 +16,5 @@
             </form>
         </div>
         <% include ./components/js_includes %>
-        <% include ./components/css_includes %>
     </body>
 </html>

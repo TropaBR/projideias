@@ -1,9 +1,10 @@
 <!DOCTYPE html>
+<% include ./components/head %>
 <html>
-    <% include ./components/head %>
     <body>
         <div class="container">
-            <h1>Registrar</h1>
+            <% include ./components/header %>
+            <h3>Registrar</h3>
             <form id="registerForm">
                 <div class="row">
                     <div class="four columns">
@@ -62,7 +63,6 @@
                 <button class="button-primary">Registrar</button>';
         </script>
         <% include ./components/js_includes %>
-        <% include ./components/css_includes %>
         <script>
             var inputBorderColor = $("#password").css("border-color");
             var passwordInputs = $(":password");

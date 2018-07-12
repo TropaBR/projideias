@@ -116,16 +116,12 @@ $("#loginForm").on("submit", function(e) {
         form.append(pwPanel);
         form.children("#emailPanel").remove();
         form.off("submit").on("submit", function(e) {
-            var emailToken = getCookieValue('emailToken');
             var pw = $("#password").val();
             e.preventDefault();
-            $.post("api/Auth/Login", { emailToken : emailToken, password : pw }, function(content, status) {
-                console.log('Content: '+ content);
-                console.log('Status: '+ status);
-                alert("Logado com token: " + content.token);
+            $.post("api/Auth/Login", { password : pw }, function(content, status) {
+                window.location.href = '/';
             });
         });
-        document.cookie = "emailToken="+ content.emailToken;
     });
 });
 
