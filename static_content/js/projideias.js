@@ -211,9 +211,14 @@ $("#searchFilterForm").on("submit", function(e) {
 			for(i in users) {
 				var userRow = '<tr>'+
 					'<td><b>USUÁRIO</b></td>'+
-					'<td><b>Nome: </b>'+ users[i].name +'</td>'+
-					'<td><b>Sobrenome: </b>'+ users[i].lastname +'</td>'+
-					'<td><b>Período: </b>'+ users[i].period +'</td>'+
+					'<td><b>Nome: </b>'+ users[i].name +' '+ users[i].lastname +'</td>'+
+					'<td><b>'+ users[i].type +'</b></td>'+
+					'<td>'+
+						( users[i].period ? '<b>'+ users[i].period +'º Período</b><br />' : '' ) +
+						'<b>Email: </b>'+ users[i].email +
+						'<br ><b>Telefone:</b> '+ users[i].phone +
+					'</td>'+
+					'<td style="text-align: right;"><a class="button" href="user?id='+ users[i].id +'">Ver Usuário</a></td>'+
 				'</tr>';
 
 				tbody.append(userRow);

@@ -63,7 +63,7 @@ exports.getUserPassword = function(id, callback) {
 
 exports.getUsersByName = function(name, callback) {
 	if(name) {
-		var sql = "SELECT id, name, lastname, period FROM User"
+		var sql = "SELECT id, type, name, email, phone, lastname, period FROM User"
 			+" WHERE name like '%"+name+"%'"
 			+" OR lastname like '%"+name+"%'";
 

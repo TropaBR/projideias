@@ -74,6 +74,9 @@ app.use('/api/GetUsersByName', getUsers);
 var getRecentProjects = require('./api/get_recent_projects');
 app.use('/api/GetRecentProjects', getRecentProjects);
 
+var invite = require('./api/invite');
+app.use('/api/', invite);
+
 // Error page
 app.use(function(req, res, next) {
   res.status(404);

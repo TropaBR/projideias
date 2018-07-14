@@ -7,6 +7,7 @@
             <h3 id="name"></h1>
             <h4>Líder: <a id="leader"></a></h4>
             <div id="description"></div>
+			<br/>
             <div class="row">
                 <div class="six columns">
                     <h3>Membros</h3>
@@ -21,6 +22,24 @@
                         <tbody>
                         </tbody>
                     </table>
+					<h3>Convites</h3>
+                    <table id="invitations">
+                        <thead>
+                            <tr>
+                                <th>Convidado</th>
+                                <th>Função</th>
+                                <th>Convidado em</th>
+								<th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+					<form id='inviteUser'>
+						<select id="selectUser" name="selectUser"></select> <!-- As opções serão definidas no script abaixo -->
+						<select id="selectFunction" name="selectFunction"></select> <!-- As opções serão definidas no script abaixo -->
+						<button>Convidar</button>
+					</form>
                 </div>
                 <div class="six columns">
                     <h3>Ideias</h3>
@@ -35,7 +54,7 @@
                         </tbody>
                     </table>
                 </div>
-            </div>            
+            </div>
         </div>
         <% include ./components/js_includes %>
         <script>
@@ -97,6 +116,28 @@
                             window.location.href = "idea?id=" + $(this).attr("data-value");
                         });
                     });
+					
+					$.get("api/GetInvitationsFromProject", params, function(invitations, status) {
+                        invitations = JSON.parse(invitations);
+
+                        var invitationsTable = $("#invitations").children("tbody");
+						
+                        for(i in invitations) {
+
+                            var row = '<tr class="tr-hover" data-value="'+ invitations[i].id +'">' +
+                            '<td>'+ invitations[i].guest +'</td>' +
+                            '<td></td>' +
+							'<td>'+ invitations[i].dateTimeCreation +'</td>' +
+							'<td>'+ invitations[i].status +'</td>' +
+                            '</tr>';
+
+                            invitationsTable.append(row);                   
+                        }
+                    }).fail(function(status) {
+						var invitationsTable = $("#invitations").children("thead");
+						invitationsTable.children().remove();
+						invitationsTable.append('<tr><th>Ninguém foi convidado</tr></th>');
+					});;
                 }).fail(function(status) {
                     if(status.status == "404") {
                         var container = $(".container");
