@@ -49,10 +49,20 @@ app.all('/register', function(req, res) {
 // Logged-in content past this line
 app.use(TokenCheck);
 
+app.all('/logout', function(req, res) {
+  res.clearCookie("token");
+	res.redirect('/');
+});
+
 // Logged-in view routes
 app.all('/:view?', function(req, res) {
   var page = req.params.view || 'index';
-	res.render(page);
+
+  var pageData = {
+    user : res.locals.user
+  }
+
+	res.render(page, pageData);
 });
 
 // Logged-in API routes
