@@ -1,2 +1,2 @@
 # projideias
-Sistema de Registro de Ideias e Sugestões
+Plataforma de Registro de Ideias e Sugestões
