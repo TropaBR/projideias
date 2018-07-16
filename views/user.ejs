@@ -36,6 +36,34 @@
                     </table>
                 </div>
             </div>
+			<br/><br/>
+			<div class="row">
+                <div class="six columns">
+					<h3 id="titleRequests">Solicitações</h3>
+					<table id="requests">
+						<thead>
+							<tr>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+				<div class="six columns">
+					<h3 id="titleInvitations">Convites</h3>
+					<table id="invitations">
+						<thead>
+							<tr>
+								<th></th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+            </div>
         </div>
         <% include ./components/js_includes %>
         <script>
@@ -56,7 +84,7 @@
                     $("#email").text(user.email).attr("href", "mailto:"+user.email);
                     $("#phone").text(user.phone);
 
-                    $.get("api/GetProjectWithUser", { id: user.id }, function(projects, status) {
+                    $.get("api/GetProjectsWithUser", { id: user.id }, function(projects, status) {
                         projects = JSON.parse(projects);
 
                         var projectsTable = $("#projects").children("tbody");
@@ -93,6 +121,58 @@
                             window.location.href = "idea?id=" + $(this).attr("data-value");
                         });
                     });
+					
+					$.get("api/GetUserRequests", { id: user.id }, function(requests, status) {
+                        requests = JSON.parse(requests);
+
+                        var requestsTable = $("#requests").children("tbody");
+						
+                        for(i in requests) {
+
+                            var row = '<tr>' +
+                            '<td>'+
+								'<b><a href="project?id='+ requests[i].idProject +'">'+ requests[i].project +'</a></b>'+
+								'<br/><b>Você escreveu: </b>'+ requests[i].comment +
+							'</td>'+
+							'<td>'+
+								'<button onclick="deleteRequest('+ requests[i].id +')">Cancelar</button>'+
+							'</td>'+
+                            '</tr>';
+
+                            requestsTable.append(row);                   
+                        }
+                    }).fail(function(status) {
+						var requestsTable = $("#requests").children("thead");
+						requestsTable.children().remove();
+						requestsTable.append('<tr><th>Nenhuma solicitação pendente</tr></th>');
+					});
+					
+					$.get("api/GetUserInvitations", { id: user.id }, function(invitations, status) {
+                        invitations = JSON.parse(invitations);
+
+                        var invitationsTable = $("#invitations").children("tbody");
+						
+                        for(i in invitations) {
+
+                            var row = '<tr>' +
+                            '<td>'+
+								'<b><a href="project?id='+ invitations[i].idProject +'">'+ invitations[i].project +'</a></b>'+
+								'<br/><b>Enviado por: <a href="user?id='+ invitations[i].idSender +'">'+ invitations[i].sender +'</a></b>'+
+								'<br/>'+ invitations[i].comment +
+							'</td>'+
+							'<td>'+
+								'<button onclick="acceptInvite('+ invitations[i].id +')">Aceitar</button>'+
+								'<button onclick="refuseInvite('+ invitations[i].id +')">Recusar</button>'+
+							'</td>'+
+                            '</tr>';
+
+                            invitationsTable.append(row);                   
+                        }
+                    }).fail(function(status) {
+						var invitationsTable = $("#invitations").children("thead");
+						invitationsTable.children().remove();
+						invitationsTable.append('<tr><th>Nenhum convite pendente</tr></th>');
+					});
                 }).fail(function(status) {
                     if(status.status == "404") {
                         var container = $(".container");

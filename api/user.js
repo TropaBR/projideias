@@ -46,4 +46,19 @@ router.post('/CreateUser', bodyParser.urlencoded({extended: false}), function (r
   });
 });
 
+router.get('/GetUsers', function (req, res) {
+    user.getUsers(function(err, result) {
+    if (err) {
+      console.log(err);
+      res.sendStatus(500);
+      return;
+    }
+    if(result.length > 0) {
+      res.send(JSON.stringify(result));
+    } else {
+      res.sendStatus(404);
+    }
+  });
+});
+
 module.exports = router;

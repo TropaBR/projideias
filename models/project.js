@@ -108,10 +108,29 @@ exports.getProjectWithUser = function(id, callback) {
     db.query(sql, [id], callback);
 };
 
-exports.getRecentProjects = function(nProjects, callback) {
-	if ( isNaN(nProjects) ) {
-		nProjects = 5;
-	}
+exports.getProjectsWithUser = function(id, callback) {
+	var sql = "SELECT Project.*, ProjectStatus.status FROM ProjectParticipant"
+	+ " LEFT JOIN Project ON Project.id = idProject"
+	+ " LEFT JOIN (" // Todo esse SQL abaixo é para consultar a tabela "ProjectStatusHistory" e retornar a linha com o último status de cada projeto
+		+ " SELECT ProjectStatusHistory.*"
+		+ " FROM ProjectStatusHistory"
+		+ " INNER JOIN ("
+			+ "SELECT idProject, MAX(timestamp) AS dateTimeStart"
+			+ " FROM ProjectStatusHistory"
+			+ " GROUP BY idProject"
+		+ ") p"
+		+ " ON ProjectStatusHistory.idProject = p.idProject"
+		+ " AND ProjectStatusHistory.timestamp = p.dateTimeStart"
+	+ ") AS ProjectStatusHistory"
+	+ " ON Project.id = ProjectStatusHistory.idProject"
+	+ " LEFT JOIN ProjectStatus ON ProjectStatusHistory.idProjectStatus = ProjectStatus.id"
+	+ " WHERE idUser = ?"
+	+ " ORDER BY ProjectStatusHistory.timestamp DESC"
+
+    db.query(sql, [id], callback);
+};
+
+exports.getRecentProjects = function(callback) {
 	var sql = "SELECT Project.id, Project.name, ProjectType.type, ProjectStatus.status, User.name as leader, Project.description, DATE_FORMAT(ProjectHistoryCreation.timestamp, \"%d/%m/%y\") as creationDate"
 	+ " FROM Project"
 	+ " LEFT JOIN ProjectType ON Project.type = ProjectType.id"
@@ -145,11 +164,9 @@ exports.getRecentProjects = function(nProjects, callback) {
 	+ " WHERE Project.private = 0"
 	+ " ORDER BY ProjectHistoryCreation.timestamp DESC" // Para ordenar os projetos pela data de criação
 	+ " LIMIT ?";
-	
-    //db.query(sql, [nProjects], callback);
-	db.query(sql, [5], callback); // APAGAR AQUI E USAR A LINHA DE CIMA!!!
-};
 
+	db.query(sql, 5, callback);
+};
 exports.getProjectTypes = function(callback) {
 	var sql = "SELECT *"
 		+ " FROM ProjectType";
@@ -197,4 +214,48 @@ exports.createProject = function(project, owner, callback) {
 			});			
 		});
 	});
+};
+/*
+exports.getParticipantRoles = function(callback) {
+	var sql = "SHOW COLUMNS FROM ProjectParticipant WHERE Field = 'role'";
+	
+	db.query(sql, callback);
+}
+
+exports.verifyUserAlreadyInProject = function(idProject, idUser, callback) {
+	var sql = "SELECT ProjectParticipant.*"
+	+ " FROM ProjectParticipant"
+	+ " WHERE ProjectParticipant.idProject = ?"
+	+ " AND ProjectParticipant.idUser = ?";
+	
+	db.query(sql, [idProject, idUser], callback);
+}
+*/
+exports.insertUserInProject = function(idUser, idProject, callback) {
+	var sql = "INSERT INTO ProjectParticipant(idUser, idProject, role, dateTimeStart) VALUES(?, ?, 'Contribuidor', now())";
+
+    db.query(sql, [idUser, idProject], callback);
+};
+
+exports.getProjectStatusHistory = function(idProject, callback) {
+	var sql = "SELECT ProjectStatus.status, ProjectStatusHistory.comment, DATE_FORMAT(ProjectStatusHistory.timestamp, \"%d/%m/%y - %H:%i\") as date"
+	+ "	FROM ProjectStatusHistory"
+	+ " LEFT JOIN ProjectStatus ON ProjectStatusHistory.idProjectStatus = ProjectStatus.id"
+	+ " WHERE ProjectStatusHistory.idProject = ?"
+	+ " ORDER BY ProjectStatusHistory.timestamp";
+
+    db.query(sql, idProject, callback);
+};
+
+exports.getTypesOfProjectStatus = function(callback) {
+	var sql = "SELECT * FROM ProjectStatus"
+	+ " ORDER BY id";
+
+    db.query(sql, callback);
+};
+
+exports.updateProject = function(idProject, idStatus, comment, callback) {
+	var sql = "INSERT INTO ProjectStatusHistory(idProject, idProjectStatus, comment) VALUES(?, ?, ?)";
+
+    db.query(sql, [idProject, idStatus, comment], callback);
 };

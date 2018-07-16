@@ -228,3 +228,115 @@ $("#searchFilterForm").on("submit", function(e) {
 		});
 	}
 });
+
+$("#inviteUser").on("submit", function (e) {
+	e.preventDefault();
+
+    var container = $(".container");
+
+	var data = $("#inviteUser").serialize();
+	data += '&sender=1'; // MUDAR AQUI QUANDO FOR POSSÍVEL PEGAR O ID DO USUÁRIO DA SESSÃO!!!
+	
+	$.get("api/CreateInvite", data, function(response) {
+        alert("Convite enviado!");
+		location.reload();
+	}).fail(function(status) {
+		alert("Não foi possível enviar o convite. Houve um problema no servidor.");
+	});
+});
+
+$("#updateProject").on("submit", function (e) {
+	e.preventDefault();
+
+    var container = $(".container");
+
+	var data = $("#updateProject").serialize();
+	
+	$.get("api/UpdateProject", data, function(response) {
+		location.reload();
+		alert("Projeto atualizado!");
+	}).fail(function(status) {
+		alert("Não foi possível atualizar o projeto. Houve um problema no servidor.");
+	});
+});
+
+$("#applyProject").on("submit", function (e) {
+	e.preventDefault();
+	
+	var params = {
+		id:''
+	};
+	getParams(params);
+	
+    var container = $(".container");
+	var data = $("#applyProject").serialize();
+	
+	$.get("api/ApplyProject", data, function(response) {
+		alert("Solicitação enviada!");
+		window.location.href = "project?id="+ params.id;
+	}).fail(function(status) {
+		alert("Não foi possível enviar sua solicitação. Houve um problema no servidor.");
+	});
+});
+
+function deleteInvite(id) {
+	if( confirm("Deseja mesmo cancelar esse convite?") ){
+		$.get("api/DeleteInvite", {"id": id}, function(status) {
+			alert("Convite cancelado");
+			location.reload();
+		}).fail(function(status) {
+			alert("Não foi possível deletar o convite. Ocorreu um erro no servidor.");
+		});
+	}
+}
+
+function acceptRequest(id) {
+	if( confirm("Aceitar o usuário no projeto?") ){
+		$.get("api/AcceptRequest", {"id": id}, function(status) {
+			location.reload();
+		}).fail(function(status) {
+			alert("Não foi possível aceitar a solicitação. Ocorreu um erro no servidor.");
+		});
+	}
+}
+
+function refuseRequest(id) {
+	if( confirm("Recusar a solicitação?") ){
+		$.get("api/RefuseRequest", {"id": id}, function(status) {
+			location.reload();
+		}).fail(function(status) {
+			alert("Não foi possível recusar a solicitação. Ocorreu um erro no servidor.");
+		});
+	}
+}
+
+function refuseInvite(id) {
+	if( confirm("Recusar o convite?") ){
+		$.get("api/RefuseInvite", {"id": id}, function(status) {
+			location.reload();
+		}).fail(function(status) {
+			alert("Não foi possível recusar o convite. Ocorreu um erro no servidor.");
+		});
+	}
+}
+
+function acceptInvite(id) {
+	if( confirm("Aceitar fazer parte do projeto?") ){
+		$.get("api/AcceptInvite", {"id": id}, function(status) {
+			location.reload();
+		}).fail(function(status) {
+			alert("Não foi possível aceitar o convite. Ocorreu um erro no servidor.");
+		});
+	}
+}
+
+function deleteRequest(id) {
+	if( confirm("Deseja mesmo cancelar sua solicitação?") ){
+		$.get("api/DeleteRequest", {"id": id}, function(status) {
+			alert("Solicitação cancelada");
+			location.reload();
+		}).fail(function(status) {
+			alert("Não foi possível cancelar sua solicitação. Ocorreu um erro no servidor.");
+		});
+	}
+}
