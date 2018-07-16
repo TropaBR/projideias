@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<% include ./components/head %>
+<html>
+    <body>
+        <div class="container">
+            <% include ./components/header %>
+            <h3>Novo Projeto</h3>
+            <form id="newProjectForm">
+                <div class="row">
+                    <div class="twelve columns">
+                        <label for="name">Título</label>
+                        <input class="u-full-width" type="text" id="name" name="name">
+                    </div>                    
+                </div>
+                <div class="row">
+                    <div class="twelve columns">
+                        <label for="description">Descrição</label>
+                        <textarea class="u-full-width" type="password" id="description" name="description"></textarea>
+                    </div>                    
+                </div>
+                <div class="row">
+                    <div class="six columns">
+                        <label for="type">Tipo</label>
+                        <select id="type" name="type">
+                        </select>
+                    </div>
+                    <div class="six columns">
+                        <label for="private">Privado</label>
+                        <select id="private" name="private">
+                            <option value="1">Sim</option>
+                            <option value="0">Não</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="button-primary">Avançar</button>
+            </form>
+        </div>
+        <% include ./components/js_includes %>
+        <script>
+            $(function() {
+                var selectTypes = $("#type");
+                $.get("api/GetProjectTypes", function(projectTypes, status) {
+                    projectTypes = JSON.parse(projectTypes);
+                    selectTypes.children().remove();
+                    for(i in projectTypes) {
+						var option = '<option value='+ projectTypes[i].id +'>'+ projectTypes[i].type +'</option>';
+                        selectTypes.append(option);
+                    }
+                }).fail(function(status) {
+                    if(status.status == "404") selectTypes.children().remove();
+                });                
+
+                $("#newProjectForm").on("submit", function(e) {
+                    e.preventDefault();
+
+                    var data = $("#newProjectForm").serialize();
+
+                    $.post("api/CreateProject", data, function(result, status) {
+                        result = JSON.parse(result);
+                        window.location.href = "project?id=" + result.id;
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>

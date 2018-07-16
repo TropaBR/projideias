@@ -149,3 +149,52 @@ exports.getRecentProjects = function(nProjects, callback) {
     //db.query(sql, [nProjects], callback);
 	db.query(sql, [5], callback); // APAGAR AQUI E USAR A LINHA DE CIMA!!!
 };
+
+exports.getProjectTypes = function(callback) {
+	var sql = "SELECT *"
+		+ " FROM ProjectType";
+
+		db.query(sql, callback);
+};
+
+exports.createProject = function(project, owner, callback) {
+	db.beginTransaction(function(err) {
+		if (err) { console.log(err); }
+		db.query('INSERT INTO Project SET ?', project, function (err, result) {
+			if (err) {
+				return db.rollback(function() {
+					console.log(err);
+				});
+			}
+		
+			var statusHistory = { idProject: result.insertId, idProjectStatus: 1 };
+			var projectParticipant = { idProject: result.insertId, idUser: owner, role: 'Líder' };
+		
+			db.query('INSERT INTO ProjectParticipant SET ?', projectParticipant, function(err, result) {
+				
+				if (err) {
+					return db.rollback(function() {
+						console.log(err);
+					});
+				}
+
+				db.query('INSERT INTO ProjectStatusHistory SET ?', statusHistory, function (err, result) {
+					if (err) {
+						return db.rollback(function() {
+							console.log(err);
+						});
+					}
+					db.commit(function(err) {
+						if (err) {
+							return db.rollback(function() {
+								console.log(err);
+							});
+						}
+						result.insertId = statusHistory.idProject;
+						callback(err, result);
+					});
+				});
+			});			
+		});
+	});
+};

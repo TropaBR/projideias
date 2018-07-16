@@ -1,5 +1,6 @@
 const express = require('express');
 const project = require('../models/project');
+const bodyParser = require('body-parser');
 const router = express.Router();
 
 router.get('/GetProject', function (req, res) {
@@ -85,6 +86,33 @@ router.get('/GetProjectWithUser', function (req, res) {
       return;
     }
     if(result.length > 0) {
+      res.send(JSON.stringify(result));
+    } else res.sendStatus(404);
+  });
+});
+
+router.get('/GetProjectTypes', function (req, res) {
+  project.getProjectTypes(function(err, result) {
+    if (err) {
+      res.sendStatus(500);
+      return;
+    }
+    if(result.length > 0) {
+      res.send(JSON.stringify(result));
+    } else res.sendStatus(404);
+  });
+});
+
+router.post('/CreateProject', bodyParser.urlencoded({extended: false}), function (req, res) {
+
+  project.createProject(req.body, res.locals.user.id, function(err, result) {
+    if (err) {
+      res.sendStatus(500);
+      return;
+    }
+    console.log(result);
+    if(result.affectedRows > 0) {
+      result = { id: result.insertId };
       res.send(JSON.stringify(result));
     } else res.sendStatus(404);
   });
