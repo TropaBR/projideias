@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<% include ./components/head %>
+<html>
+    <body>
+        <div class="container">
+            <% include ./components/header %>
+            <h3>Entrar no Projeto:</h3>
+            <h4 id="projectName"></h4>
+            <form id="applyProject" name="applyProject" method="POST">
+				<input id="idProjectToApply" name="idProjectToApply" type="hidden">
+				<input id="requester" name="requester" type="hidden" value=<%= user.id %>>
+                <textarea name="message" placeholder="Escreva uma mensagem" maxlength=3000 style="width: 400px;"></textarea>
+				<br/><button class="u-pull-left button button-primary">Enviar Solicitação</button>
+            </form>    
+        </div>
+		<% include ./components/js_includes %>
+        <script>
+			$(function() {
+				var params = {
+                    id:''
+                };
+				
+                getParams(params);
+                console.log(params);
+				
+				$.get("api/GetProject", params, function(project, status) {
+                    project = JSON.parse(project)[0];
+                    $("#projectName").text(project.name);
+					document.getElementById('idProjectToApply').value = params.id;
+				}).fail(function(status) {
+                    if(status.status == "404") {
+                        var container = $(".container");
+                        container.children().remove();
+                        $("body, html, .container").css("height", "100%");
+                        container.append('<h1 class="screen-center">Tivemos um problema e não encontramos sua informação. :(</h1>');
+                    }
+                });
+			});
+        </script>
+    </body>
+</html>

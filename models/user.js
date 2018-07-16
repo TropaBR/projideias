@@ -70,3 +70,10 @@ exports.getUsersByName = function(name, callback) {
 		db.query(sql, callback);
 	}
 }
+
+exports.getUsers = function(callback) {
+  var sql = 'SELECT id, name, lastname, type FROM User'
+	+' ORDER BY type, name';
+
+  db.query(sql, callback);
+}

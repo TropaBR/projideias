@@ -87,6 +87,9 @@ app.use('/api/GetRecentProjects', getRecentProjects);
 var invite = require('./api/invite');
 app.use('/api/', invite);
 
+var participationrequest = require('./api/participation_request');
+app.use('/api/', participationrequest);
+
 // Error page
 app.use(function(req, res, next) {
   res.status(404);

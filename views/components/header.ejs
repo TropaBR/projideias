@@ -1,6 +1,7 @@
 <div class="row">
     <h1 class="hrz-center u-full-width"><a class="header-title" href="/">PROJIDEIAS</a></h1>
 	<% if(typeof user !== 'undefined') { %>
+	<h6 style="text-align: right; margin: 0px;">Bem Vindo! <a href="logout">Sair</a></h6>
 	<nav class="navbar">
 		<div class="container">
 			<ul class="navbar-list">
@@ -8,7 +9,7 @@
 				<li class="navbar-item"><a class="navbar-link" href="ideas">Ideias</a></li>
 				<li class="navbar-item"><a class="navbar-link" href="projects">Projetos</a></li>
 				<li class="navbar-item"><a class="navbar-link" href="fastersearch">Buscar</a></li>
-				<li class="navbar-item"><a class="navbar-link" href="user?id=<%= user.id %>">Meu Perfil</a></li> <!-- MUDAR AQUI!!! -->
+				<li class="navbar-item"><a class="navbar-link" href="user?id=<%= user.id %>">Meu Perfil</a></li>
 				<li class="navbar-item"><a class="navbar-link" href="logout">Logout</a></li>
 			</ul>
 		</div>

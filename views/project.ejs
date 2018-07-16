@@ -5,7 +5,14 @@
         <div class="container">
             <% include ./components/header %>
             <h3 id="name"></h1>
-            <h4>Líder: <a id="leader"></a></h4>
+			<div class="row">
+				<div class="six columns">
+					<h4>Líder: <a id="leader"></a></h4>
+				</div>
+				<div class="six columns">
+					<a id="applyProjectButton" class="u-pull-right button button-primary">Quero Entrar!</a> <!-- Se o usuário já estiver no projeto, esse botão será removido no script abaixo -->
+				</div>
+			</div>
             <div id="description"></div>
 			<br/>
             <div class="row">
@@ -22,24 +29,6 @@
                         <tbody>
                         </tbody>
                     </table>
-					<h3>Convites</h3>
-                    <table id="invitations">
-                        <thead>
-                            <tr>
-                                <th>Convidado</th>
-                                <th>Função</th>
-                                <th>Convidado em</th>
-								<th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-					<form id='inviteUser'>
-						<select id="selectUser" name="selectUser"></select> <!-- As opções serão definidas no script abaixo -->
-						<select id="selectFunction" name="selectFunction"></select> <!-- As opções serão definidas no script abaixo -->
-						<button>Convidar</button>
-					</form>
                 </div>
                 <div class="six columns">
                     <h3>Ideias</h3>
@@ -55,6 +44,63 @@
                     </table>
                 </div>
             </div>
+			<br/>
+			<div class="row" id="requestsAndInvitations">
+                <div class="six columns">
+					<h3 id="titleRequests">Solicitações</h3>
+					<table id="requests">
+						<thead>
+							<tr>
+								<th>Mensagem</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+				<div class="six columns">
+					<h3 id="titleInvitations">Convites</h3>
+					<table id="invitations">
+						<thead>
+							<tr>
+								<th>Convidado</th>
+								<th>Por</th>
+								<th>Status</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+					<form id='inviteUser' name='inviteUser' method='POST'>
+						<input id="idProjectToInvite" name="idProjectToInvite" type="hidden">
+						<select id="selectUser" name="selectUser" required></select> <!-- As opções serão definidas no script abaixo -->
+						<br/><textarea name="inviteUserComment" placeholder="Envie uma mensagem" style="width: 300px;"></textarea>
+						<br/><button>Convidar</button>
+					</form>
+				</div>
+			</div>
+			<br/>
+			<div style="text-align: center;">
+				<h3 id="titleProjectStates">Etapas do Projeto</h3>
+				<table id="projectStates" style="margin: auto; text-align: center; font-size: 17px;">
+					<thead>
+						<tr>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+				<br/>
+				<form id='updateProject' name='updateProject' method='POST'>
+					<input id="idProjectToUpdate" name="idProjectToUpdate" type="hidden">
+					<select id="selectStatus" name="selectStatus" required></select> <!-- As opções serão definidas no script abaixo -->
+					<br/><textarea name="updateProjectComment" maxlength=3000 placeholder="Descrição aqui..." style="width: 600px;"></textarea>
+					<br/><button class="u-pull-center button button-primary">Atualizar Projeto</button>
+				</form>
+			</div>
         </div>
         <% include ./components/js_includes %>
         <script>
@@ -62,6 +108,8 @@
                 var params = {
                     id:''
                 };
+				var userIsAParticipant = false;
+				var userHaveSpecialPermissions = false;
 
                 getParams(params);
 
@@ -72,8 +120,11 @@
                     
                     $("#name").text(project.name);                    
                     $("#description").text(project.description);
-
-                    $.get("api/GetProjectParticipants", params, function(participants, status) {
+					document.getElementById('idProjectToInvite').value = params.id; // Não consegui fazer usando $("#idProjectToInvite")
+					document.getElementById('idProjectToUpdate').value = params.id; // Idem
+					document.getElementById('applyProjectButton').href = "project_apply?id="+ params.id; // Idem
+                    
+					$.get("api/GetProjectParticipants", params, function(participants, status) {
                         participants = JSON.parse(participants);
 
                         var participantsTable = $("#participants").children("tbody");
@@ -89,7 +140,15 @@
                             '<td>'+ parseTimestamp(participants[i].dateTimeStart) +'</td>' +
                             '</tr>';
 
-                            participantsTable.append(row);                            
+                            participantsTable.append(row);
+
+							if(participants[i].id == <%= user.id %>){ // Verifica se o usuário da sessão está no projeto
+								userIsAParticipant = true;
+								$("#applyProjectButton").remove();
+								if(participants[i].role == "Líder" || participants[i].role == "Moderador"){
+									userHaveSpecialPermissions = true;
+								}
+							}
                         }
 
                         participantsTable.children("tr").on("click", function () {
@@ -116,28 +175,101 @@
                             window.location.href = "idea?id=" + $(this).attr("data-value");
                         });
                     });
-					
-					$.get("api/GetInvitationsFromProject", params, function(invitations, status) {
-                        invitations = JSON.parse(invitations);
+					/*
+					if ( ! userIsAParticipant ) {
+						$("#titleRequests").remove();
+						$("#requests").remove();
+						$("#titleInvitations").remove();
+						$("#invitations").remove();
+						$("#inviteUser").remove();
+						$("#titleProjectStates").remove();
+						$("#projectStates").remove();
+						$("#updateProject").remove();
+					} else {
+					*/
+						$.get("api/GetRequestsToProject", params, function(requests, status) {
+							userHaveSpecialPermissions = true; // APAGAR AQUI!!!
+							requests = JSON.parse(requests);
 
-                        var invitationsTable = $("#invitations").children("tbody");
+							var requestsTable = $("#requests").children("tbody");
+							
+							for(i in requests) {
+
+								var row = '<tr>' +
+								'<td>'+
+									'<b>De: <a href="user?id='+ requests[i].idUser +'">'+ requests[i].requester +'</a></b>'+
+									'<br/><b>Data: '+ requests[i].dateTimeCreation +'</b>'+
+									( requests[i].comment ? '<br/>'+ requests[i].comment : '' ) +
+								'</td>'+
+								'<td>'+ ( userHaveSpecialPermissions ?
+									'<button onclick="acceptRequest('+ requests[i].id +')">Aceitar</button>'+
+									'<button onclick="refuseRequest('+ requests[i].id +')">Recusar</button>'
+									: '' ) +
+								'</td>' +
+								'</tr>';
+
+								requestsTable.append(row);                   
+							}
+						}).fail(function(status) {
+							var requestsTable = $("#requests").children("thead");
+							requestsTable.children().remove();
+							requestsTable.append('<tr><th>Nenhuma pendente</tr></th>');
+						});
 						
-                        for(i in invitations) {
+						$.get("api/GetInvitationsFromProject", params, function(invitations, status) {
+							userHaveSpecialPermissions = true; // APAGAR AQUI!!!
+							invitations = JSON.parse(invitations);
 
-                            var row = '<tr class="tr-hover" data-value="'+ invitations[i].id +'">' +
-                            '<td>'+ invitations[i].guest +'</td>' +
-                            '<td></td>' +
-							'<td>'+ invitations[i].dateTimeCreation +'</td>' +
-							'<td>'+ invitations[i].status +'</td>' +
-                            '</tr>';
+							var invitationsTable = $("#invitations").children("tbody");
+							
+							for(i in invitations) {
 
-                            invitationsTable.append(row);                   
-                        }
-                    }).fail(function(status) {
-						var invitationsTable = $("#invitations").children("thead");
-						invitationsTable.children().remove();
-						invitationsTable.append('<tr><th>Ninguém foi convidado</tr></th>');
-					});;
+								var row = '<tr>' +
+								'<td><a href="user?id='+ invitations[i].idUser +'">'+ invitations[i].guest +'</a></td>' +
+								'<td>'+ invitations[i].sender +'</td>' +
+								'<td>'+ invitations[i].status +'</td>' +
+								( userHaveSpecialPermissions && invitations[i].status == 'Pendent' ? '<td><button onclick="deleteInvite('+ invitations[i].id +')">Cancelar</button></td>' : '' ) +
+								'</tr>';
+
+								invitationsTable.append(row);                   
+							}
+						}).fail(function(status) {
+							var invitationsTable = $("#invitations").children("thead");
+							invitationsTable.children().remove();
+							invitationsTable.append('<tr><th>Ninguém foi convidado</tr></th>');
+						});
+						userHaveSpecialPermissions = true; // APAGAR AQUI!!!
+						if ( ! userHaveSpecialPermissions ) {
+							$("#inviteUser").remove();
+						}
+						
+						$.get("api/GetProjectStatusHistory", params, function(states, status) {
+							states = JSON.parse(states);
+
+							var projectStates = $("#projectStates").children("tbody");
+							
+							for(i in states) {
+
+								var row = '<tr>' +
+								'<td>'+
+									'<b>'+ states[i].status +'</b>'+
+									'<br/><b>'+ states[i].date +'</b>'+
+									( states[i].comment ? '<br/>'+ states[i].comment : '' ) +
+								'</td>'+
+								'</tr>';
+
+								projectStates.append(row);      
+
+								if (states[i].status == "Finalizado") {
+									$("#updateProject").remove();
+								}
+							}
+						}).fail(function(status) {
+							var projectStates = $("#projectStates").children("thead");
+							projectStates.children().remove();
+							projectStates.append('<tr><th>Não houve mudança de estado</tr></th>');
+						});;
+					//}
                 }).fail(function(status) {
                     if(status.status == "404") {
                         var container = $(".container");
@@ -146,6 +278,46 @@
                         container.append('<h1 class="screen-center">Tivemos um problema e não encontramos sua informação. :(</h1>');
                     }
                 });
+				
+				var getUsers = function getUsers(e) {
+					if(e) e.preventDefault();
+					
+					$.get("api/GetUsers", function(users, status) {
+						users = JSON.parse(users);
+						
+						var selectUser = $('#selectUser');
+						selectUser.children().remove();
+						selectUser.append('<option value="">-Usuário-</option>');
+						for(i in users) {
+							var option = '<option value='+ users[i].id +'>'+ users[i].name +' - '+ users[i].type +'</option>';
+							selectUser.append(option);
+						}
+					}).fail(function(status) {
+						if(status.status == "404") selectUser.children().remove();
+					});
+				}
+				getUsers();
+				
+				var getTypesOfProjectStatus = function getTypesOfProjectStatus(e) {
+					if(e) e.preventDefault();
+					
+					$.get("api/GetTypesOfProjectStatus", function(typesOfStatus, status) {
+						typesOfStatus = JSON.parse(typesOfStatus);
+						
+						var selectStatus = $('#selectStatus');
+						selectStatus.children().remove();
+						selectStatus.append('<option value="">-Estado-</option>');
+						for(i in typesOfStatus) {
+							if(typesOfStatus[i].status != 'Criado') {
+								var option = '<option value='+ typesOfStatus[i].id +'>'+ typesOfStatus[i].status +'</option>';
+								selectStatus.append(option);
+							}
+						}
+					}).fail(function(status) {
+						if(status.status == "404") selectStatus.children().remove();
+					});
+				}
+				getTypesOfProjectStatus();
             });
         </script>
     </body>

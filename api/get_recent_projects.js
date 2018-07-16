@@ -3,7 +3,7 @@ const project = require('../models/project');
 const router = express.Router();
 
 router.get('/', function (req, res) {
-  project.getRecentProjects(req.query.nProjects, function(err, result) {
+  project.getRecentProjects(function(err, result) {
     if (err) {
       res.sendStatus(500);
       return;
