@@ -40,13 +40,15 @@ exports.getIdeasFromUser = function(id, callback) {
     db.query(sql, [id], callback);
 };
 
-exports.createIdea = function(values, callback) {
-	var title = values.title;
-	var ownerid = values.ownerid;
-	var description = values.description;
-    var sql = 'INSERT INTO Idea(title, ownerid, description) VALUES (?, ?, ?)';
+exports.createIdea = function(values, ownerid, callback) {
+    var values = { title : values.title,
+        ownerid: ownerid,
+        description : values.description
+    };
 
-    db.query(sql, [title, ownerid, description], callback);
+    var sql = 'INSERT INTO Idea SET ?';
+
+    db.query(sql, values, callback);
 };
 
 exports.getIdea = function(id, callback) {

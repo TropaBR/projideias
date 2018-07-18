@@ -1,5 +1,6 @@
 const express = require('express');
 const idea = require('../models/idea');
+const bodyParser = require('body-parser');
 const router = express.Router();
 
 router.get('/GetIdea', function (req, res) {
@@ -49,6 +50,23 @@ router.get('/GetIdeasFromUser', function (req, res) {
       res.send(JSON.stringify(result));
     } else res.sendStatus(404);
   });
+});
+
+router.post('/CreateIdea', bodyParser.urlencoded({extended: false}), function (req, res) {
+	idea.createIdea(req.body, res.locals.user.id, function(err, result) {
+		if (err) {
+      console.log(err);
+			res.sendStatus(500);
+			return;
+		}
+		if (result.affectedRows > 0) {
+      var response = {
+        id: result.insertId
+      }
+			res.send(JSON.stringify(response));
+		} else
+			res.sendStatus(500);
+	});
 });
 
 module.exports = router;

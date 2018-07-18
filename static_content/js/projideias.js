@@ -128,11 +128,11 @@ $("#loginForm").on("submit", function(e) {
 $("#createIdeaForm").on("submit", function (e) {
 	e.preventDefault();
 
-    var container = $(".container");
-
 	var data = $("#createIdeaForm").serialize();
-	$.get("api/CreateIdea", data, function(response) {
-        // Aqui vamos redirecionar pra futura tela de visualização de projeto, com o id recebido
+	
+	$.post("api/CreateIdea", data, function(response, status) {
+		// Aqui vamos redirecionar pra futura tela de visualização de projeto, com o id recebido
+		window.location.href = 'idea?id='+ JSON.parse(response).id;
 	}).fail(function(status) {
 		alert(status.responseText);
 		$("#title").focus();
