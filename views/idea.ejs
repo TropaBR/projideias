@@ -6,7 +6,7 @@
         <div class="container">
 			<% include ./components/header %>
             <h3>Ideia: <span id="title"></span></h3>
-            <h4>Autor: <span id="owner"></span></h4>
+            <h4>Autor: <a id="owner"></a></h4>
             <div>Descrição: <span id="description"></span></div>
 			<br/><br/>
 			<h5>Projetos que usam essa ideia: <span id="totalProjects"></span></h5>
@@ -40,7 +40,7 @@
                     idea = JSON.parse(idea)[0];
                     
                     $("#title").text(idea.title);
-                    $("#owner").text(idea.owner);
+                    $("#owner").text(idea.owner).attr("href", "user?id="+idea.ownerid);
                     $("#description").text(idea.description);
 
                 }).fail(function(status) {
