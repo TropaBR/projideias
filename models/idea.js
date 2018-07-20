@@ -21,17 +21,6 @@ exports.getIdeasFromProject = function(id, callback) {
     db.query(sql, [id], callback);
 };
 
-exports.getIdeasFromProject = function(id, callback) {
-    var sql = "SELECT Idea.*, User.name AS leader"
-	+ " FROM ProjectIdea"
-    + " LEFT JOIN Idea ON Idea.id = ProjectIdea.idIdea"
-    + " LEFT JOIN ProjectParticipant ON ProjectParticipant.idProject = ProjectIdea.idProject"
-    + " LEFT JOIN User ON ProjectParticipant.idUser = User.id"
-	+ " WHERE idProject = ?";
-    
-    db.query(sql, [id, id], callback);
-};
-
 exports.getIdeasFromUser = function(id, callback) {
     var sql = "SELECT Idea.*"
 	+ " FROM Idea"

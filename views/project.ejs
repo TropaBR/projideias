@@ -134,7 +134,7 @@
                                 $("#leader").text(participants[i].name).attr("href", "user?id="+ participants[i].id);
                             }
 
-                            var row = '<tr class="tr-hover" data-value="'+ participants[i].id +'">' +
+                            var row = '<tr class="click-hover" data-value="'+ participants[i].id +'">' +
                             '<td>'+ participants[i].name +'</td>' +
                             '<td>'+ participants[i].role +'</td>' +
                             '<td>'+ parseTimestamp(participants[i].dateTimeStart) +'</td>' +
@@ -163,7 +163,7 @@
 
                         for(i in ideas) {
 
-                            var row = '<tr class="tr-hover" data-value="'+ ideas[i].id +'">' +
+                            var row = '<tr class="click-hover" data-value="'+ ideas[i].id +'">' +
                             '<td>'+ ideas[i].title +'</td>' +
                             '<td>'+ ideas[i].owner +'</td>' +
                             '</tr>';

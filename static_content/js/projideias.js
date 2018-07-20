@@ -204,7 +204,7 @@ $("#searchFilterForm").on("submit", function(e) {
 			}
 		}).fail(function(status) {
 			;
-		});
+		});		
 		
 		$.get("api/GetUsersByName", data, function(users) {
 			users = JSON.parse(users);
@@ -227,6 +227,38 @@ $("#searchFilterForm").on("submit", function(e) {
 			;
 		});
 	}
+});
+
+var filtroTimeout;
+		
+function filtrar () {
+	clearTimeout(filtroTimeout);
+
+	filtroTimeout = setTimeout(function() {
+		var tbody = $("#ideasList");
+		
+		tbody.children().remove();
+
+		var data = {
+			filter: $("#filterIdeas").val()	
+		};
+
+		$.get("api/GetFilteredIdeas", data, function(ideas) {
+
+			ideas = JSON.parse(ideas);
+
+			for(i in ideas) {
+				var ideaRow = '<li class="click-hover" data-value="'+ ideas[i].id +'">'+ ideas[i].title +'</li>';
+
+				tbody.append(ideaRow);
+			}
+
+			tbody.children().on("click", function () {
+				alert("add idea"+ $(this).attr("data-value"));
+			});
+		});
+
+	}, 300);
 });
 
 $("#inviteUser").on("submit", function (e) {
