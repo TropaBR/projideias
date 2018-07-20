@@ -90,6 +90,9 @@ app.use('/api/', invite);
 var participationrequest = require('./api/participation_request');
 app.use('/api/', participationrequest);
 
+var email = require('./api/email');
+app.use('/api/', email);
+
 // Error page
 app.use(function(req, res, next) {
   res.status(404);
