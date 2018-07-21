@@ -177,6 +177,16 @@ exports.getProjectTypes = function(callback) {
 exports.createProject = function(project, owner, callback) {
 	db.beginTransaction(function(err) {
 		if (err) { console.log(err); }
+
+		var ideas =  project.ideas;
+		ideas = ideas.split(',');
+
+		project = {
+			name: project.name,
+			description: project.description,
+			type: project.type
+		};
+
 		db.query('INSERT INTO Project SET ?', project, function (err, result) {
 			if (err) {
 				return db.rollback(function() {
@@ -184,8 +194,9 @@ exports.createProject = function(project, owner, callback) {
 				});
 			}
 		
-			var statusHistory = { idProject: result.insertId, idProjectStatus: 1 };
-			var projectParticipant = { idProject: result.insertId, idUser: owner, role: 'Líder' };
+			var projectId = result.insertId;
+			var statusHistory = { idProject: projectId, idProjectStatus: 1 };
+			var projectParticipant = { idProject: projectId, idUser: owner, role: 'Líder' };
 		
 			db.query('INSERT INTO ProjectParticipant SET ?', projectParticipant, function(err, result) {
 				
@@ -201,14 +212,33 @@ exports.createProject = function(project, owner, callback) {
 							console.log(err);
 						});
 					}
-					db.commit(function(err) {
+
+					var uniqueIdeias = [];
+
+					for(i in ideas) {
+						if(uniqueIdeias.indexOf(ideas[i]) === -1) uniqueIdeias.push(ideas[i]);						
+					}
+
+					for(i in uniqueIdeias) {
+						uniqueIdeias[i] = ([uniqueIdeias[i], projectId]);						
+					}
+
+					db.query('INSERT INTO ProjectIdea VALUES ?', [uniqueIdeias], function (err, result) {
 						if (err) {
 							return db.rollback(function() {
 								console.log(err);
 							});
 						}
-						result.insertId = statusHistory.idProject;
-						callback(err, result);
+
+						db.commit(function(err) {
+							if (err) {
+								return db.rollback(function() {
+									console.log(err);
+								});
+							}
+							result.insertId = projectId;
+							callback(err, result);
+						});
 					});
 				});
 			});			

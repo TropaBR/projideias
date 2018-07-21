@@ -35,10 +35,12 @@
                 <div class="row">
                     <div class="six columns">
                         <label for="filterIdeas">Ideias Utilizadas</label>
-                        <input id="filterIdeas" name="filterIdeas" type="text" onChange="filtrar()">
+                        <input class="u-full-width" autocomplete="off" id="filterIdeas" name="filterIdeas" type="text">
                         <ul class="result-list" id="ideasList" name="ideasList"></ul>
-                        </select>
                     </div>
+                </div>
+                <div class="row">
+                    <div id="added-ideas" class="twelve columns"></div>
                 </div>
                 <button class="button-primary">Avançar</button>
             </form>
@@ -62,6 +64,20 @@
                     e.preventDefault();
 
                     var data = $("#newProjectForm").serialize();
+
+                    var ideas = $(".used-idea");
+                    
+                    if(ideas.length > 0) {
+                        data += '&ideas=';
+
+                        var ideiasData = [];
+
+                        ideas.each(function () {
+                            ideiasData.push($(this).attr("data-value"));
+                        });
+
+                        data += ideiasData.join(',');
+                    }
 
                     $.post("api/CreateProject", data, function(result, status) {
                         result = JSON.parse(result);

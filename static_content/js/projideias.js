@@ -231,16 +231,17 @@ $("#searchFilterForm").on("submit", function(e) {
 
 var filtroTimeout;
 		
-function filtrar () {
+$("#filterIdeas").on("keyup", function() {
 	clearTimeout(filtroTimeout);
 
 	filtroTimeout = setTimeout(function() {
 		var tbody = $("#ideasList");
+		var filterideas = $("#filterIdeas");
 		
 		tbody.children().remove();
 
 		var data = {
-			filter: $("#filterIdeas").val()	
+			filter: filterideas.val() || 'null'
 		};
 
 		$.get("api/GetFilteredIdeas", data, function(ideas) {
@@ -254,10 +255,15 @@ function filtrar () {
 			}
 
 			tbody.children().on("click", function () {
-				alert("add idea"+ $(this).attr("data-value"));
+				tbody.children().remove();
+				filterideas.val('');
+
+				if($("a[data-value='"+ $(this).attr("data-value") +"']").length > 0) return;
+
+				$("#added-ideas").append('<a class="used-idea button" data-value="'+ $(this).attr("data-value") +'">'+ $(this).text() +'</a>');
+				$("a[data-value='"+ $(this).attr("data-value") +"']").on("click", function() { $(this).remove() });				
 			});
 		});
-
 	}, 300);
 });
 

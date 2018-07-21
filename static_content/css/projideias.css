@@ -40,3 +40,15 @@ textarea {
     border: 1px solid black;
     border-radius: 3px;
 }
+
+.result-list {    
+    margin-top: -1.5rem;
+    list-style: none; 
+}
+
+.result-list li {
+    margin-bottom: 0;
+    font-weight: bold;
+    padding: 5px;
+    border: 1px solid black;
+}
