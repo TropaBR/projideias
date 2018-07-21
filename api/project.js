@@ -186,13 +186,13 @@ router.get('/GetTypesOfProjectStatus', function (req, res) {
 router.get('/UpdateProject', function (req, res) {
 	project.updateProject(req.query.idProjectToUpdate, req.query.selectStatus, req.query.updateProjectComment, function(err, result) {
     if (err) {
-	    console.log(err);
+	  console.log(err);
       res.sendStatus(500);
       return;
     }
     if (result.affectedRows > 0) {
-      console.log(result);
-      res.send(result[0]);
+		console.log(result);
+	    res.send(result[0]);
     } else
 		res.sendStatus(500);
   });

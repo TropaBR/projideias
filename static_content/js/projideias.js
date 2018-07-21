@@ -285,14 +285,40 @@ $("#inviteUser").on("submit", function (e) {
 
 $("#updateProject").on("submit", function (e) {
 	e.preventDefault();
+	
+	var params = {
+		id:''
+	};
+	getParams(params);
 
     var container = $(".container");
-
 	var data = $("#updateProject").serialize();
 	
 	$.get("api/UpdateProject", data, function(response) {
-		location.reload();
-		alert("Projeto atualizado!");
+		$.get("api/GetProjectParticipants", params, function(participants, status) {
+			participants = JSON.parse(participants);
+			var sendTo = [];
+			for(i in participants) {
+				sendTo.push( participants[i].email );
+			}
+			sendTo.push( "marcos.santos@abracadabra.com.br" ); // Essa linha é para teste, depois apagar!!!
+			sendTo = sendTo.join(', ');
+			
+			var nameProject = $("#name").text();
+			var obj = {
+				"sendTo": sendTo
+				,"subjectMessage": 'Atualização do Projeto "'+ nameProject +'" - ProjIdeias'
+				,"message": 'O Projeto "'+ nameProject +'" que você participa foi atualizado de status.'
+			};
+			$.get("api/SendEmail", obj, function(response) {
+				alert("Projeto atualizado!");
+			}).fail(function(status) {
+				alert("Projeto atualizado!\nPorém não foi possível enviar o alerta para os participantes. Houve um erro no servidor.");
+			});
+			location.reload();
+		}).fail(function(status) {
+			alert("Projeto atualizado!\nPorém não foi possível enviar o alerta para os participantes. Houve um problema no servidor.");
+		});
 	}).fail(function(status) {
 		alert("Não foi possível atualizar o projeto. Houve um problema no servidor.");
 	});
