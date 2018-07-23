@@ -75,6 +75,7 @@
 					</table>
 					<form id='inviteUser' name='inviteUser' method='POST'>
 						<input id="idProjectToInvite" name="idProjectToInvite" type="hidden">
+						<input id="sender" name="sender" type="hidden">
 						<select id="selectUser" name="selectUser" required></select> <!-- As opções serão definidas no script abaixo -->
 						<br/><textarea name="inviteUserComment" placeholder="Envie uma mensagem" style="width: 300px;"></textarea>
 						<br/><button>Convidar</button>
@@ -84,6 +85,12 @@
 			<br/>
 			<div style="text-align: center;">
 				<h3 id="titleProjectStates">Etapas do Projeto</h3>
+				<form id='updateProject' name='updateProject' method='POST'>
+					<input id="idProjectToUpdate" name="idProjectToUpdate" type="hidden">
+					<select id="selectStatus" name="selectStatus" required></select> <!-- As opções serão definidas no script abaixo -->
+					<br/><textarea name="updateProjectComment" maxlength=3000 placeholder="Descrição aqui..." style="width: 600px;"></textarea>
+					<br/><button class="u-pull-center button button-primary">Atualizar Projeto</button>
+				</form>
 				<table id="projectStates" style="margin: auto; text-align: center; font-size: 17px;">
 					<thead>
 						<tr>
@@ -94,12 +101,6 @@
 					</tbody>
 				</table>
 				<br/>
-				<form id='updateProject' name='updateProject' method='POST'>
-					<input id="idProjectToUpdate" name="idProjectToUpdate" type="hidden">
-					<select id="selectStatus" name="selectStatus" required></select> <!-- As opções serão definidas no script abaixo -->
-					<br/><textarea name="updateProjectComment" maxlength=3000 placeholder="Descrição aqui..." style="width: 600px;"></textarea>
-					<br/><button class="u-pull-center button button-primary">Atualizar Projeto</button>
-				</form>
 			</div>
         </div>
         <% include ./components/js_includes %>
@@ -122,6 +123,7 @@
                     $("#description").text(project.description);
 					document.getElementById('idProjectToInvite').value = params.id; // Não consegui fazer usando $("#idProjectToInvite")
 					document.getElementById('idProjectToUpdate').value = params.id; // Idem
+					document.getElementById('sender').value = <%= user.id %>; // Idem
 					document.getElementById('applyProjectButton').href = "project_apply?id="+ params.id; // Idem
                     
 					$.get("api/GetProjectParticipants", params, function(participants, status) {

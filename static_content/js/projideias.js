@@ -273,7 +273,6 @@ $("#inviteUser").on("submit", function (e) {
     var container = $(".container");
 
 	var data = $("#inviteUser").serialize();
-	data += '&sender=1'; // MUDAR AQUI QUANDO FOR POSSÍVEL PEGAR O ID DO USUÁRIO DA SESSÃO!!!
 	
 	$.get("api/CreateInvite", data, function(response) {
         alert("Convite enviado!");

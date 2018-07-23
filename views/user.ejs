@@ -79,7 +79,7 @@
                 $.get("api/GetUser", params, function(user, status) {
                     user = JSON.parse(user)[0];
                     
-                    $("#name").text(user.name + ' ' + user.lastname);
+                    $("#name").text(user.name + ' ' + ( user.lastname ? user.lastname : '' ));
                     $("#period").text(user.period + 'º período');
                     $("#email").text(user.email).attr("href", "mailto:"+user.email);
                     $("#phone").text(user.phone);

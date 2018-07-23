@@ -272,7 +272,7 @@ exports.getProjectStatusHistory = function(idProject, callback) {
 	+ "	FROM ProjectStatusHistory"
 	+ " LEFT JOIN ProjectStatus ON ProjectStatusHistory.idProjectStatus = ProjectStatus.id"
 	+ " WHERE ProjectStatusHistory.idProject = ?"
-	+ " ORDER BY ProjectStatusHistory.timestamp";
+	+ " ORDER BY ProjectStatusHistory.timestamp DESC";
 
     db.query(sql, idProject, callback);
 };
