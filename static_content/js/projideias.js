@@ -300,7 +300,6 @@ $("#updateProject").on("submit", function (e) {
 			for(i in participants) {
 				sendTo.push( participants[i].email );
 			}
-			sendTo.push( "marcos.santos@abracadabra.com.br" ); // Essa linha é para teste, depois apagar!!!
 			sendTo = sendTo.join(', ');
 			
 			var nameProject = $("#name").text();
